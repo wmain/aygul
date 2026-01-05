@@ -1058,6 +1058,21 @@ export default function PlaybackScreen() {
     });
   }, []);
 
+  // Monitor audio playback status and handle completion
+  useEffect(() => {
+    if (audioStatus.playing === false && audioStatus.currentTime >= audioStatus.duration && audioStatus.duration > 0) {
+      // Playback just finished
+      if (lastPlayedIndexRef.current === currentAudioIndex) {
+        playNextLine();
+      }
+    }
+    
+    // Update progress
+    if (audioStatus.duration > 0) {
+      setAudioProgress(audioStatus.currentTime / audioStatus.duration);
+    }
+  }, [audioStatus.playing, audioStatus.currentTime, audioStatus.duration, currentAudioIndex, playNextLine]);
+
   const generateDialogue = async () => {
     setIsGenerating(true);
     setGenerationProgress(0);
