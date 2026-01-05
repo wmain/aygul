@@ -485,23 +485,24 @@ function parseDialogue(response: string): ParsedLine[] {
 }
 
 async function generateDialogueText(config: ConversationConfig): Promise<ParsedLine[]> {
-  const prompt = generatePrompt(config);
-
-  const response = await fetch('https://api.openai.com/v1/responses', {
+  // Use backend proxy to avoid CORS issues
+  const response = await fetch('/api/generate-dialogue', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${OPENAI_API_KEY}`,
     },
     body: JSON.stringify({
-      model: 'gpt-4o-mini',
-      input: prompt,
+      config: {
+        language: config.language,
+        location: config.location,
+        situation: config.situation,
+        difficulty: config.difficulty,
+        format: config.format,
+      },
     }),
   });
 
   if (!response.ok) {
-    const error = await response.text();
-    console.error('OpenAI API error:', error);
     throw new Error('Failed to generate dialogue');
   }
 
