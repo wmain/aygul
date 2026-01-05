@@ -3,7 +3,7 @@ import { LOCATIONS, LANGUAGES } from './types';
 import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
 import { useDevSettingsStore, type TTSProvider } from './dev-settings-store';
-import { getBundledLesson, getBundledLessonKey, hasBundledLesson } from './bundled-lessons';
+import { getBundledLesson, getBundledLessonKey, hasBundledLesson, getBundledLessonAsync } from './bundled-lessons';
 
 const OPENAI_API_KEY = process.env.EXPO_PUBLIC_VIBECODE_OPENAI_API_KEY;
 const ELEVENLABS_API_KEY = process.env.EXPO_PUBLIC_VIBECODE_ELEVENLABS_API_KEY;
@@ -637,16 +637,17 @@ export async function generateConversation(
   if (appMode === 'development') {
     const lessonKey = getBundledLessonKey(config.language, config.location);
     if (lessonKey) {
-      const bundledLesson = getBundledLesson(lessonKey);
-      if (bundledLesson) {
-        console.log(`[Dev Mode] Loading bundled lesson: ${lessonKey}`);
-        onProgress?.(0.5, 'Loading bundled lesson...');
-        
-        // Simulate loading delay for UX
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        onProgress?.(1, 'Complete!');
-        return bundledLesson;
+      onProgress?.(0.3, 'Loading bundled lesson...');
+      console.log(`[Dev Mode] Loading bundled lesson: ${lessonKey}`);
+      
+      try {
+        const bundledLesson = await getBundledLessonAsync(lessonKey);
+        if (bundledLesson) {
+          onProgress?.(1, 'Complete!');
+          return bundledLesson;
+        }
+      } catch (error) {
+        console.error('[Dev Mode] Failed to load bundled lesson:', error);
       }
     }
     console.log(`[Dev Mode] No bundled lesson found for ${config.language}_${config.location}, falling back to API`);
