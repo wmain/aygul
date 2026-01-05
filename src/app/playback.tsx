@@ -1062,8 +1062,16 @@ export default function PlaybackScreen() {
   useEffect(() => {
     if (audioStatus.playing === false && audioStatus.currentTime >= audioStatus.duration && audioStatus.duration > 0) {
       // Playback just finished
-      if (lastPlayedIndexRef.current === currentAudioIndex) {
-        playNextLine();
+      if (lastPlayedIndexRef.current === currentAudioIndex && isPlayingRef.current) {
+        // Manually trigger next line
+        const nextIndex = currentAudioIndexRef.current + 1;
+        if (nextIndex < (dialogue?.lines.length || 0)) {
+          setCurrentAudioIndex(nextIndex);
+          setCurrentLineIndex(nextIndex);
+        } else {
+          setIsPlaying(false);
+          setCurrentAudioIndex(-1);
+        }
       }
     }
     
@@ -1071,7 +1079,7 @@ export default function PlaybackScreen() {
     if (audioStatus.duration > 0) {
       setAudioProgress(audioStatus.currentTime / audioStatus.duration);
     }
-  }, [audioStatus.playing, audioStatus.currentTime, audioStatus.duration, currentAudioIndex, playNextLine]);
+  }, [audioStatus.playing, audioStatus.currentTime, audioStatus.duration, currentAudioIndex, dialogue]);
 
   const generateDialogue = async () => {
     setIsGenerating(true);
