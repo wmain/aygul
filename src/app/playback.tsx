@@ -1054,7 +1054,7 @@ export default function PlaybackScreen() {
     }
 
     setAudioModeAsync({
-      playsInSilentModeIOS: true,
+      playsInSilentMode: true,
     });
   }, []);
 
