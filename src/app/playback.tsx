@@ -1081,6 +1081,13 @@ export default function PlaybackScreen() {
     }
   }, [audioStatus.playing, audioStatus.currentTime, audioStatus.duration, currentAudioIndex, dialogue]);
 
+  // Auto-play next line when currentAudioIndex changes (from playback completion)
+  useEffect(() => {
+    if (currentAudioIndex >= 0 && isPlayingRef.current && lastPlayedIndexRef.current !== currentAudioIndex) {
+      playLineAudio(currentAudioIndex);
+    }
+  }, [currentAudioIndex]);
+
   const generateDialogue = async () => {
     setIsGenerating(true);
     setGenerationProgress(0);
