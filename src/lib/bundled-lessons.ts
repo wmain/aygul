@@ -58,7 +58,6 @@ function getBundledAudioUri(lessonKey: BundledLessonKey, lineIndex: number): any
     const key = `${lessonKey}_${lineIndex}`;
     return AUDIO_FILES[key] || null;
   } catch (error) {
-    console.warn(`Audio file not found: ${lessonKey}/line_${lineIndex}.mp3`);
     return null;
   }
 }
