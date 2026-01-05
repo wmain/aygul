@@ -31,7 +31,7 @@ class DialogueRequest(BaseModel):
     config: dict
 
 @app.post("/api/generate-dialogue")
-async def generate_dialogue(request: DialogueRequest):
+async function generate_dialogue(request: DialogueRequest):
     """Proxy OpenAI dialogue generation to avoid CORS issues"""
     
     if not OPENAI_API_KEY:
@@ -78,7 +78,27 @@ Format each line as:
         try:
             response = await client.post(url, headers=headers, json=payload)
             response.raise_for_status()
-            return response.json()
+            data = response.json()
+            
+            # Extract the text from the response
+            # OpenAI responses API structure: data.output[0].content[0].text
+            text = ""
+            if "output" in data and len(data["output"]) > 0:
+                output = data["output"][0]
+                if "content" in output and len(output["content"]) > 0:
+                    content = output["content"][0]
+                    if "text" in content:
+                        text = content["text"]
+            
+            # Return in the format the frontend expects
+            return {
+                "output": [{
+                    "content": [{
+                        "text": text
+                    }]
+                }],
+                "output_text": text  # Fallback format
+            }
         except httpx.HTTPError as e:
             raise HTTPException(status_code=500, detail=f"OpenAI API request failed: {str(e)}")
 
