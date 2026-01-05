@@ -31,7 +31,7 @@ class DialogueRequest(BaseModel):
     config: dict
 
 @app.post("/api/generate-dialogue")
-async function generate_dialogue(request: DialogueRequest):
+async def generate_dialogue(request: DialogueRequest):
     """Proxy OpenAI dialogue generation to avoid CORS issues"""
     
     if not OPENAI_API_KEY:
