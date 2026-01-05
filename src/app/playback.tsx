@@ -1140,35 +1140,19 @@ export default function PlaybackScreen() {
     const line = dialogue.lines[index];
     if (!line) return;
 
-    if (audioPlayerRef.current) {
-      audioPlayerRef.current.remove();
-      audioPlayerRef.current = null;
-    }
-
     if (line.audioUri) {
       try {
-        const player = createAudioPlayer({ uri: line.audioUri });
-        audioPlayerRef.current = player;
-
+        // Replace the audio source
+        audioPlayer.replace({ uri: line.audioUri });
+        
         // Set playback rate
-        player.playbackRate = playbackSpeedRef.current;
-
+        audioPlayer.playbackRate = playbackSpeedRef.current;
+        
         // Start playing
-        player.play();
-
-        // Listen for playback events
-        const subscription = player.addListener('playbackStatusUpdate', (status) => {
-          if (status.playing === false && status.currentTime >= status.duration && status.duration > 0) {
-            // Playback finished
-            playNextLine();
-          }
-          if (status.duration > 0) {
-            setAudioProgress(status.currentTime / status.duration);
-          }
-        });
-
-        // Store subscription for cleanup
-        player.subscription = subscription;
+        audioPlayer.play();
+        
+        // Track which line we just started playing
+        lastPlayedIndexRef.current = index;
       } catch (error) {
         console.error('Error playing audio:', error);
         setTimeout(() => {
@@ -1191,17 +1175,16 @@ export default function PlaybackScreen() {
 
     if (isPlaying) {
       setIsPlaying(false);
-      if (audioPlayerRef.current) {
-        audioPlayerRef.current.pause();
-      }
+      audioPlayer.pause();
     } else {
       setIsPlaying(true);
       if (currentAudioIndex < 0) {
         setCurrentAudioIndex(0);
         setCurrentLineIndex(0);
         await playLineAudio(0);
-      } else if (audioPlayerRef.current && audioPlayerRef.current.paused) {
-        audioPlayerRef.current.play();
+      } else if (audioPlayer.playing === false && audioStatus.currentTime > 0) {
+        // Resume paused audio
+        audioPlayer.play();
       } else {
         await playLineAudio(currentAudioIndex);
       }
@@ -1214,13 +1197,11 @@ export default function PlaybackScreen() {
     setAutoScrollEnabled(true);
 
     setIsPlaying(false);
-    if (audioPlayerRef.current) {
-      audioPlayerRef.current.remove();
-      audioPlayerRef.current = null;
-    }
+    audioPlayer.pause();
     setCurrentLineIndex(0);
     setCurrentAudioIndex(-1);
     setAudioProgress(0);
+    lastPlayedIndexRef.current = -1;
 
     setTimeout(async () => {
       setIsPlaying(true);
@@ -1254,11 +1235,8 @@ export default function PlaybackScreen() {
     // User tapped a specific line - do NOT re-enable auto-scroll
     // They navigated intentionally, so don't force scroll position
 
-    if (audioPlayerRef.current) {
-      audioPlayerRef.current.remove();
-      audioPlayerRef.current = null;
-    }
-
+    audioPlayer.pause();
+    
     setCurrentLineIndex(index);
     setCurrentAudioIndex(index);
     currentAudioIndexRef.current = index;
@@ -1417,11 +1395,8 @@ export default function PlaybackScreen() {
     // User tapped progress bar - do NOT re-enable auto-scroll
     // They navigated intentionally, so don't force scroll position
 
-    if (audioPlayerRef.current) {
-      audioPlayerRef.current.remove();
-      audioPlayerRef.current = null;
-    }
-
+    audioPlayer.pause();
+    
     setCurrentLineIndex(startIndex);
     setCurrentAudioIndex(startIndex);
     currentAudioIndexRef.current = startIndex;
