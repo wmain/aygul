@@ -1157,8 +1157,19 @@ export default function PlaybackScreen() {
 
     if (line.audioUri) {
       try {
+        // audioUri can be:
+        // - A string URL (for API-generated audio)
+        // - A number (Expo asset ID for bundled audio)
+        // - An object with { uri } (for file system paths)
+        let audioSource = line.audioUri;
+        
+        // If it's an object with uri property, extract it
+        if (typeof audioSource === 'object' && audioSource !== null && 'uri' in audioSource) {
+          audioSource = audioSource.uri;
+        }
+        
         // Replace the audio source
-        audioPlayer.replace({ uri: line.audioUri });
+        audioPlayer.replace(audioSource);
         
         // Set playback rate
         audioPlayer.playbackRate = playbackSpeedRef.current;
