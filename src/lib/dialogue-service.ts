@@ -517,17 +517,16 @@ async function generateAudioOpenAI(
   retryCount = 0
 ): Promise<{ uri: string; duration: number }> {
   try {
-    const response = await fetch('https://api.openai.com/v1/audio/speech', {
+    // Use backend proxy to avoid CORS issues
+    const response = await fetch('/api/tts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'tts-1',
-        input: text,
+        text: text,
         voice: voice,
-        response_format: 'mp3',
+        provider: 'openai',
       }),
     });
 
@@ -545,31 +544,8 @@ async function generateAudioOpenAI(
       throw new Error('Failed to generate audio');
     }
 
-    const audioBlob = await response.blob();
-    const reader = new FileReader();
-
-    const base64DataUri = await new Promise<string>((resolve, reject) => {
-      reader.onload = () => {
-        resolve(reader.result as string);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(audioBlob);
-    });
-
-    let fileUri: string;
-
-    // On web, use the base64 data URI directly
-    // On native, save to file system
-    if (Platform.OS === 'web') {
-      fileUri = base64DataUri;
-    } else {
-      const base64Data = base64DataUri.split(',')[1];
-      const fileName = `audio_${Date.now()}_${Math.random().toString(36).slice(2)}.mp3`;
-      fileUri = `${FileSystem.cacheDirectory}${fileName}`;
-      await FileSystem.writeAsStringAsync(fileUri, base64Data, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-    }
+    const data = await response.json();
+    const fileUri = data.audio; // Already base64 data URI from backend
 
     // Estimate duration based on text length (rough estimate: 150 words per minute)
     const wordCount = text.split(' ').length;
