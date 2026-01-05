@@ -49,11 +49,68 @@ const BUNDLED_LESSONS: Record<BundledLessonKey, GeneratedDialogue> = {
 };
 
 // Helper to create audio URI for bundled lessons
-function getBundledAudioUri(lessonKey: BundledLessonKey, lineIndex: number): string {
-  // In development, we use require() for bundled assets
-  // The actual audio files will be generated and placed in assets/bundled-lessons/
-  return `bundled://${lessonKey}/line_${lineIndex}.mp3`;
+// Returns a require() reference to the local audio file
+function getBundledAudioUri(lessonKey: BundledLessonKey, lineIndex: number): any {
+  // Use require() to load local audio files for Expo
+  try {
+    // Dynamically construct the require path
+    // Note: Expo requires static paths, so we use a switch statement
+    const key = `${lessonKey}_${lineIndex}`;
+    return AUDIO_FILES[key] || null;
+  } catch (error) {
+    console.warn(`Audio file not found: ${lessonKey}/line_${lineIndex}.mp3`);
+    return null;
+  }
 }
+
+// Pre-load all audio file references using require()
+// This is necessary because Expo requires static paths at build time
+const AUDIO_FILES: Record<string, any> = {
+  // English Coffee Shop
+  'en_coffee_shop_0': require('@/assets/bundled-audio/en_coffee_shop/line_0.mp3'),
+  'en_coffee_shop_1': require('@/assets/bundled-audio/en_coffee_shop/line_1.mp3'),
+  'en_coffee_shop_2': require('@/assets/bundled-audio/en_coffee_shop/line_2.mp3'),
+  'en_coffee_shop_3': require('@/assets/bundled-audio/en_coffee_shop/line_3.mp3'),
+  'en_coffee_shop_4': require('@/assets/bundled-audio/en_coffee_shop/line_4.mp3'),
+  'en_coffee_shop_5': require('@/assets/bundled-audio/en_coffee_shop/line_5.mp3'),
+  'en_coffee_shop_6': require('@/assets/bundled-audio/en_coffee_shop/line_6.mp3'),
+  'en_coffee_shop_7': require('@/assets/bundled-audio/en_coffee_shop/line_7.mp3'),
+  'en_coffee_shop_8': require('@/assets/bundled-audio/en_coffee_shop/line_8.mp3'),
+  'en_coffee_shop_9': require('@/assets/bundled-audio/en_coffee_shop/line_9.mp3'),
+  'en_coffee_shop_10': require('@/assets/bundled-audio/en_coffee_shop/line_10.mp3'),
+  'en_coffee_shop_11': require('@/assets/bundled-audio/en_coffee_shop/line_11.mp3'),
+  'en_coffee_shop_12': require('@/assets/bundled-audio/en_coffee_shop/line_12.mp3'),
+  'en_coffee_shop_13': require('@/assets/bundled-audio/en_coffee_shop/line_13.mp3'),
+  'en_coffee_shop_14': require('@/assets/bundled-audio/en_coffee_shop/line_14.mp3'),
+  'en_coffee_shop_15': require('@/assets/bundled-audio/en_coffee_shop/line_15.mp3'),
+  'en_coffee_shop_16': require('@/assets/bundled-audio/en_coffee_shop/line_16.mp3'),
+  'en_coffee_shop_17': require('@/assets/bundled-audio/en_coffee_shop/line_17.mp3'),
+  'en_coffee_shop_18': require('@/assets/bundled-audio/en_coffee_shop/line_18.mp3'),
+  'en_coffee_shop_19': require('@/assets/bundled-audio/en_coffee_shop/line_19.mp3'),
+  'en_coffee_shop_20': require('@/assets/bundled-audio/en_coffee_shop/line_20.mp3'),
+  'en_coffee_shop_21': require('@/assets/bundled-audio/en_coffee_shop/line_21.mp3'),
+  'en_coffee_shop_22': require('@/assets/bundled-audio/en_coffee_shop/line_22.mp3'),
+  'en_coffee_shop_23': require('@/assets/bundled-audio/en_coffee_shop/line_23.mp3'),
+  'en_coffee_shop_24': require('@/assets/bundled-audio/en_coffee_shop/line_24.mp3'),
+  'en_coffee_shop_25': require('@/assets/bundled-audio/en_coffee_shop/line_25.mp3'),
+  'en_coffee_shop_26': require('@/assets/bundled-audio/en_coffee_shop/line_26.mp3'),
+  'en_coffee_shop_27': require('@/assets/bundled-audio/en_coffee_shop/line_27.mp3'),
+  'en_coffee_shop_28': require('@/assets/bundled-audio/en_coffee_shop/line_28.mp3'),
+  'en_coffee_shop_29': require('@/assets/bundled-audio/en_coffee_shop/line_29.mp3'),
+  'en_coffee_shop_30': require('@/assets/bundled-audio/en_coffee_shop/line_30.mp3'),
+  'en_coffee_shop_31': require('@/assets/bundled-audio/en_coffee_shop/line_31.mp3'),
+  'en_coffee_shop_32': require('@/assets/bundled-audio/en_coffee_shop/line_32.mp3'),
+  'en_coffee_shop_33': require('@/assets/bundled-audio/en_coffee_shop/line_33.mp3'),
+  'en_coffee_shop_34': require('@/assets/bundled-audio/en_coffee_shop/line_34.mp3'),
+  'en_coffee_shop_35': require('@/assets/bundled-audio/en_coffee_shop/line_35.mp3'),
+  'en_coffee_shop_36': require('@/assets/bundled-audio/en_coffee_shop/line_36.mp3'),
+  'en_coffee_shop_37': require('@/assets/bundled-audio/en_coffee_shop/line_37.mp3'),
+  'en_coffee_shop_38': require('@/assets/bundled-audio/en_coffee_shop/line_38.mp3'),
+  'en_coffee_shop_39': require('@/assets/bundled-audio/en_coffee_shop/line_39.mp3'),
+  'en_coffee_shop_40': require('@/assets/bundled-audio/en_coffee_shop/line_40.mp3'),
+  'en_coffee_shop_41': require('@/assets/bundled-audio/en_coffee_shop/line_41.mp3'),
+  'en_coffee_shop_42': require('@/assets/bundled-audio/en_coffee_shop/line_42.mp3'),
+};
 
 function createEnglishCoffeeShopLesson(): GeneratedDialogue {
   const lines: DialogueLine[] = [
