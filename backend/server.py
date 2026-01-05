@@ -50,23 +50,47 @@ async def generate_dialogue(request: DialogueRequest):
     situation = config.get("situation", "ordering")
     difficulty = config.get("difficulty", "intermediate")
     
-    prompt = f"""Generate a language learning lesson dialogue for the following scenario:
+    prompt = f"""Generate a language learning lesson dialogue in PIPE-DELIMITED format.
+
 Language: {language}
 Location: {location}
 Situation: {situation}
 Difficulty: {difficulty}
 
-Create a complete lesson with these sections:
-1. WELCOME - Introduction (5 lines, alternating speakers)
-2. VOCAB - Vocabulary with definitions (4 items)
-3. SLOW - Slow dialogue (6 lines)
-4. BREAKDOWN - Phrase explanations (3 items)
-5. NATURAL - Natural speed dialogue (7 lines)
-6. QUIZ - Quiz questions (4 Q&A pairs)
-7. CULTURAL - Cultural notes (2 items)
+Format each line EXACTLY as: SpeakerID|SegmentType|[emotion]|dialogue text
 
-Format each line as:
-[SECTION_TYPE] Speaker1/Speaker2: text"""
+- SpeakerID: Use "1" for first speaker, "2" for second speaker
+- SegmentType: WELCOME, VOCAB, SLOW, BREAKDOWN, NATURAL, QUIZ, CULTURAL
+- emotion: neutral, happy, curious, friendly, polite
+- Alternate speakers naturally in dialogue sections
+
+Generate a complete lesson with these sections (total ~30-35 lines):
+
+1. WELCOME (5 lines) - Introduction
+   Example: 1|WELCOME|[friendly]|Hello and welcome to our coffee shop lesson!
+   
+2. VOCAB (4-6 lines) - Vocabulary with definitions
+   Example: 1|VOCAB|[neutral]|Coffee - a hot beverage made from roasted beans
+   
+3. SLOW (6-8 lines) - Slow-paced dialogue between speakers
+   Example: 2|SLOW|[polite]|Hello, how can I help you today?
+   Example: 1|SLOW|[friendly]|Hi, I would like to order a coffee please
+   
+4. BREAKDOWN (3-4 lines) - Phrase explanations
+   Example: 1|BREAKDOWN|[neutral]|"I would like" is a polite way to make requests
+   
+5. NATURAL (7-10 lines) - Natural speed dialogue
+   Example: 2|NATURAL|[happy]|Hi there! What can I get for you?
+   Example: 1|NATURAL|[friendly]|Hey! I'll have a large coffee please
+   
+6. QUIZ (4-6 lines) - Questions and answers
+   Example: 1|QUIZ|[curious]|What does 'order' mean in this context?
+   Example: 1|QUIZ|[neutral]|To request food or drink
+   
+7. CULTURAL (2-3 lines) - Cultural notes
+   Example: 1|CULTURAL|[neutral]|In many countries, tipping at coffee shops is customary
+
+IMPORTANT: Output ONLY the pipe-delimited lines, no headers, no extra text."""
 
     payload = {
         "model": "gpt-4o-mini",
