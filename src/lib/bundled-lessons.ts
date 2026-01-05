@@ -11,6 +11,7 @@
  */
 
 import type { GeneratedDialogue, DialogueLine, Language, Location } from './types';
+import { Asset } from 'expo-asset';
 
 // Key format: `${language}_${location}`
 export type BundledLessonKey =
@@ -37,6 +38,33 @@ export function getBundledLesson(key: BundledLessonKey): GeneratedDialogue | nul
   return BUNDLED_LESSONS[key] || null;
 }
 
+// Async version that resolves audio URIs for web
+export async function getBundledLessonAsync(key: BundledLessonKey): Promise<GeneratedDialogue | null> {
+  const lesson = BUNDLED_LESSONS[key];
+  if (!lesson) return null;
+  
+  // Resolve all audio URIs to actual URLs for web
+  const linesWithResolvedAudio = await Promise.all(
+    lesson.lines.map(async (line) => {
+      if (line.audioUri) {
+        // Extract the lesson key and line index from the line id
+        const lineIndex = parseInt(line.id.split('_')[1]);
+        const resolvedUri = await getBundledAudioUriAsync(key, lineIndex);
+        return {
+          ...line,
+          audioUri: resolvedUri || line.audioUri,
+        };
+      }
+      return line;
+    })
+  );
+  
+  return {
+    ...lesson,
+    lines: linesWithResolvedAudio,
+  };
+}
+
 // Pre-generated lesson data
 // Audio files are stored in assets/bundled-lessons/{key}/line_{index}.mp3
 const BUNDLED_LESSONS: Record<BundledLessonKey, GeneratedDialogue> = {
@@ -50,16 +78,29 @@ const BUNDLED_LESSONS: Record<BundledLessonKey, GeneratedDialogue> = {
 
 // Helper to create audio URI for bundled lessons
 // Returns a require() reference to the local audio file
-function getBundledAudioUri(lessonKey: BundledLessonKey, lineIndex: number): any {
-  // Use require() to load local audio files for Expo
+async function getBundledAudioUriAsync(lessonKey: BundledLessonKey, lineIndex: number): Promise<string | null> {
   try {
-    // Dynamically construct the require path
-    // Note: Expo requires static paths, so we use a switch statement
     const key = `${lessonKey}_${lineIndex}`;
-    return AUDIO_FILES[key] || null;
+    const assetModule = AUDIO_FILES[key];
+    
+    if (!assetModule) {
+      return null;
+    }
+    
+    // For web, we need to resolve the asset to get the actual URL
+    const asset = Asset.fromModule(assetModule);
+    await asset.downloadAsync();
+    return asset.localUri || asset.uri;
   } catch (error) {
+    console.error(`Failed to load audio: ${lessonKey}/line_${lineIndex}`, error);
     return null;
   }
+}
+
+// Synchronous version that returns the asset module (for initial data structure)
+function getBundledAudioUri(lessonKey: BundledLessonKey, lineIndex: number): any {
+  const key = `${lessonKey}_${lineIndex}`;
+  return AUDIO_FILES[key] || null;
 }
 
 // Pre-load all audio file references using require()
