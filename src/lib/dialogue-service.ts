@@ -485,23 +485,24 @@ function parseDialogue(response: string): ParsedLine[] {
 }
 
 async function generateDialogueText(config: ConversationConfig): Promise<ParsedLine[]> {
-  const prompt = generatePrompt(config);
-
-  const response = await fetch('https://api.openai.com/v1/responses', {
+  // Use backend proxy to avoid CORS issues
+  const response = await fetch('/api/generate-dialogue', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${OPENAI_API_KEY}`,
     },
     body: JSON.stringify({
-      model: 'gpt-4o-mini',
-      input: prompt,
+      config: {
+        language: config.language,
+        location: config.location,
+        situation: config.situation,
+        difficulty: config.difficulty,
+        format: config.format,
+      },
     }),
   });
 
   if (!response.ok) {
-    const error = await response.text();
-    console.error('OpenAI API error:', error);
     throw new Error('Failed to generate dialogue');
   }
 
@@ -517,17 +518,16 @@ async function generateAudioOpenAI(
   retryCount = 0
 ): Promise<{ uri: string; duration: number }> {
   try {
-    const response = await fetch('https://api.openai.com/v1/audio/speech', {
+    // Use backend proxy to avoid CORS issues
+    const response = await fetch('/api/tts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'tts-1',
-        input: text,
+        text: text,
         voice: voice,
-        response_format: 'mp3',
+        provider: 'openai',
       }),
     });
 
@@ -545,31 +545,8 @@ async function generateAudioOpenAI(
       throw new Error('Failed to generate audio');
     }
 
-    const audioBlob = await response.blob();
-    const reader = new FileReader();
-
-    const base64DataUri = await new Promise<string>((resolve, reject) => {
-      reader.onload = () => {
-        resolve(reader.result as string);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(audioBlob);
-    });
-
-    let fileUri: string;
-
-    // On web, use the base64 data URI directly
-    // On native, save to file system
-    if (Platform.OS === 'web') {
-      fileUri = base64DataUri;
-    } else {
-      const base64Data = base64DataUri.split(',')[1];
-      const fileName = `audio_${Date.now()}_${Math.random().toString(36).slice(2)}.mp3`;
-      fileUri = `${FileSystem.cacheDirectory}${fileName}`;
-      await FileSystem.writeAsStringAsync(fileUri, base64Data, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-    }
+    const data = await response.json();
+    const fileUri = data.audio; // Already base64 data URI from backend
 
     // Estimate duration based on text length (rough estimate: 150 words per minute)
     const wordCount = text.split(' ').length;
@@ -594,23 +571,16 @@ async function generateAudioElevenLabs(
   retryCount = 0
 ): Promise<{ uri: string; duration: number }> {
   try {
-    const apiUrl = `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=mp3_44100_128`;
-
-    const response = await fetch(apiUrl, {
+    // Use backend proxy to avoid CORS issues
+    const response = await fetch('/api/tts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'xi-api-key': ELEVENLABS_API_KEY || '',
       },
       body: JSON.stringify({
         text: text,
-        model_id: 'eleven_flash_v2_5', // Fast, high quality
-        voice_settings: {
-          stability: 0.5,
-          similarity_boost: 0.75,
-          style: 0.0,
-          use_speaker_boost: true,
-        },
+        voice: voiceId,
+        provider: 'elevenlabs',
       }),
     });
 
@@ -627,29 +597,8 @@ async function generateAudioElevenLabs(
       throw new Error('Failed to generate audio with ElevenLabs');
     }
 
-    const audioBlob = await response.blob();
-    const reader = new FileReader();
-
-    const base64DataUri = await new Promise<string>((resolve, reject) => {
-      reader.onload = () => {
-        resolve(reader.result as string);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(audioBlob);
-    });
-
-    let fileUri: string;
-
-    if (Platform.OS === 'web') {
-      fileUri = base64DataUri;
-    } else {
-      const base64Data = base64DataUri.split(',')[1];
-      const fileName = `audio_${Date.now()}_${Math.random().toString(36).slice(2)}.mp3`;
-      fileUri = `${FileSystem.cacheDirectory}${fileName}`;
-      await FileSystem.writeAsStringAsync(fileUri, base64Data, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-    }
+    const data = await response.json();
+    const fileUri = data.audio; // Already base64 data URI from backend
 
     const wordCount = text.split(' ').length;
     const estimatedDuration = (wordCount / 150) * 60 * 1000;
