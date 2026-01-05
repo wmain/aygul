@@ -3,6 +3,7 @@ import { LOCATIONS, LANGUAGES } from './types';
 import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
 import { useDevSettingsStore, type TTSProvider } from './dev-settings-store';
+import { getBundledLesson, getBundledLessonKey, hasBundledLesson } from './bundled-lessons';
 
 const OPENAI_API_KEY = process.env.EXPO_PUBLIC_VIBECODE_OPENAI_API_KEY;
 const ELEVENLABS_API_KEY = process.env.EXPO_PUBLIC_VIBECODE_ELEVENLABS_API_KEY;
@@ -630,6 +631,27 @@ export async function generateConversation(
   config: ConversationConfig,
   onProgress?: (progress: number, status: string) => void
 ): Promise<GeneratedDialogue> {
+  // Check if we're in development mode and have a bundled lesson available
+  const appMode = useDevSettingsStore.getState().settings.appMode;
+  
+  if (appMode === 'development') {
+    const lessonKey = getBundledLessonKey(config.language, config.location);
+    if (lessonKey) {
+      const bundledLesson = getBundledLesson(lessonKey);
+      if (bundledLesson) {
+        console.log(`[Dev Mode] Loading bundled lesson: ${lessonKey}`);
+        onProgress?.(0.5, 'Loading bundled lesson...');
+        
+        // Simulate loading delay for UX
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        onProgress?.(1, 'Complete!');
+        return bundledLesson;
+      }
+    }
+    console.log(`[Dev Mode] No bundled lesson found for ${config.language}_${config.location}, falling back to API`);
+  }
+
   // Development mode still uses real API calls for audio, just with limited options
   // The language/location restrictions are enforced in the UI (index.tsx)
 
