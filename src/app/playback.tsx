@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from 'expo-audio';
+import { useAudioPlayer, useAudioPlayerStatus, setAudioModeAsync } from 'expo-audio';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -996,7 +996,10 @@ export default function PlaybackScreen() {
   const router = useRouter();
   const { mock } = useLocalSearchParams<{ mock?: string }>();
   const scrollViewRef = useRef<ScrollView>(null);
-  const audioPlayerRef = useRef<AudioPlayer | null>(null);
+  // Audio player using expo-audio hook
+  const audioPlayer = useAudioPlayer(null);
+  const audioStatus = useAudioPlayerStatus(audioPlayer);
+  const lastPlayedIndexRef = useRef(-1);
 
   const config = useDialogueStore((s) => s.config);
   const dialogue = useDialogueStore((s) => s.dialogue);
@@ -1032,11 +1035,11 @@ export default function PlaybackScreen() {
 
   useEffect(() => {
     playbackSpeedRef.current = playbackSpeed;
-    // Update current audio player's playback rate if playing
-    if (audioPlayerRef.current) {
-      audioPlayerRef.current.playbackRate = playbackSpeed;
+    // Update audio player's playback rate if available
+    if (audioPlayer) {
+      audioPlayer.playbackRate = playbackSpeed;
     }
-  }, [playbackSpeed]);
+  }, [playbackSpeed, audioPlayer]);
 
   useEffect(() => {
     // Handle instant mock mode (dev menu)
@@ -1053,13 +1056,6 @@ export default function PlaybackScreen() {
     setAudioModeAsync({
       playsInSilentModeIOS: true,
     });
-
-    return () => {
-      if (audioPlayerRef.current) {
-        audioPlayerRef.current.remove();
-        audioPlayerRef.current = null;
-      }
-    };
   }, []);
 
   const generateDialogue = async () => {
