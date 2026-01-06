@@ -70,18 +70,19 @@ export function generateSectionCacheKey(
 export async function getDeviceCachedAudio(cacheKey: string): Promise<string | null> {
   try {
     if (Platform.OS === 'web') {
-      // Web: Use Cache API
+      // Web: Check Cache API but return null to always use HTTP URLs
+      // (expo-audio doesn't support blob URLs on web)
+      // The browser will automatically use cached version when fetching HTTP URLs
       const cache = await caches.open(WEB_CACHE_NAME);
       const cachedResponse = await cache.match(cacheKey);
       
       if (cachedResponse) {
-        console.log(`[Device Cache] Web hit: ${cacheKey}`);
-        // Convert cached response to blob URL
-        const blob = await cachedResponse.blob();
-        return URL.createObjectURL(blob);
+        console.log(`[Device Cache] Web hit: ${cacheKey} (will use HTTP URL with browser cache)`);
+      } else {
+        console.log(`[Device Cache] Web miss: ${cacheKey}`);
       }
       
-      console.log(`[Device Cache] Web miss: ${cacheKey}`);
+      // Always return null on web to use HTTP URLs
       return null;
     } else {
       // Native: Use expo-file-system
@@ -109,19 +110,18 @@ export async function getDeviceCachedAudio(cacheKey: string): Promise<string | n
 export async function cacheAudioToDevice(cacheKey: string, audioUrl: string): Promise<string> {
   try {
     if (Platform.OS === 'web') {
-      // Web: Use Cache API
+      // Web: Use Cache API for offline support, but return original URL for playback
+      // expo-audio doesn't support blob URLs on web, so we use HTTP URLs directly
       console.log(`[Device Cache] Web caching: ${cacheKey}`);
       
       const response = await fetch(audioUrl);
       const cache = await caches.open(WEB_CACHE_NAME);
       await cache.put(cacheKey, response.clone());
       
-      // Return blob URL for playback
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      
       console.log(`[Device Cache] Web cached: ${cacheKey}`);
-      return blobUrl;
+      
+      // Return the original HTTP URL (browser will use cached version automatically)
+      return audioUrl;
     } else {
       // Native: Use expo-file-system
       const dirInfo = await FileSystem.getInfoAsync(CACHE_DIR);
