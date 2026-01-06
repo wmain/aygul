@@ -43,7 +43,11 @@ yarn-error.*
 
 # Expo log
 expo.log
--e 
+ 
+# Environment files
+*.env
+*.env.*
+
 # Environment files
 *.env
 *.env.*
@@ -52,10 +56,7 @@ expo.log
 *.env
 *.env.*
 -e 
-# Environment files
-*.env
-*.env.*
--e 
+
 # Environment files
 *.env
 *.env.*
