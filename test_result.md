@@ -354,20 +354,25 @@ January 6, 2025
 
 ## Recommendations
 
-1. **URGENT: Fix API Field Name Mismatch**
-   - Option A (Recommended): Update frontend to use snake_case in API requests
-   - Option B: Update backend Pydantic model to accept camelCase with Field aliases
-   - This is blocking all audio generation functionality
+1. **URGENT: Fix Dialogue Generation API URL (BLOCKING)**
+   - Update `/app/src/lib/dialogue-service.ts` line 491
+   - Change from: `fetch('/api/generate-dialogue', {`
+   - Change to: `fetch(\`\${BACKEND_URL}/api/generate-dialogue\`, {`
+   - Add BACKEND_URL constant at top of file: `const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';`
+   - This is blocking all lesson generation and must be fixed before section audio can be tested
 
-2. **HIGH PRIORITY: Implement Web-Compatible Device Cache**
-   - Replace expo-file-system with platform-specific storage:
-     - Web: Use IndexedDB (recommended) or Cache API for audio files
-     - Native: Keep expo-file-system
-   - Use Platform.OS check to determine which storage method to use
+2. **HIGH PRIORITY: Verify Section Audio Fixes After Issue #1 is Resolved**
+   - Code review confirms both fixes are implemented:
+     - Snake_case fields: lines 209-210 in section-audio-service.ts
+     - Cache API for web: lines 72-86 and 111-124 in section-audio-service.ts
+   - Need to re-test after dialogue generation is fixed to verify they work in practice
+   - Check backend logs for any remaining 422 errors
 
 3. **Testing Recommendations**
-   - After fixing the API mismatch, re-test all audio generation flows
-   - Verify cache hit/miss behavior works correctly
+   - After fixing Issue #1, re-test complete lesson generation flow
+   - Verify no 422 errors in section audio API calls
+   - Verify Cache API works for web (no expo-file-system errors)
+   - Test cache hit/miss behavior
    - Test section transitions and playback controls
    - Verify different character combinations create unique cache keys
 
