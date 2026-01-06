@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-import { Audio } from 'expo-av';
+import { useAudioPlayer, useAudioPlayerStatus, setAudioModeAsync } from 'expo-audio';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -996,7 +996,10 @@ export default function PlaybackScreen() {
   const router = useRouter();
   const { mock } = useLocalSearchParams<{ mock?: string }>();
   const scrollViewRef = useRef<ScrollView>(null);
-  const soundRef = useRef<Audio.Sound | null>(null);
+  // Audio player using expo-audio hook
+  const audioPlayer = useAudioPlayer(null);
+  const audioStatus = useAudioPlayerStatus(audioPlayer);
+  const lastPlayedIndexRef = useRef(-1);
 
   const config = useDialogueStore((s) => s.config);
   const dialogue = useDialogueStore((s) => s.dialogue);
@@ -1032,11 +1035,11 @@ export default function PlaybackScreen() {
 
   useEffect(() => {
     playbackSpeedRef.current = playbackSpeed;
-    // Update current sound's playback rate if playing
-    if (soundRef.current) {
-      soundRef.current.setRateAsync(playbackSpeed, true);
+    // Update audio player's playback rate if available
+    if (audioPlayer) {
+      audioPlayer.playbackRate = playbackSpeed;
     }
-  }, [playbackSpeed]);
+  }, [playbackSpeed, audioPlayer]);
 
   useEffect(() => {
     // Handle instant mock mode (dev menu)
@@ -1050,16 +1053,40 @@ export default function PlaybackScreen() {
       generateDialogue();
     }
 
-    Audio.setAudioModeAsync({
-      playsInSilentModeIOS: true,
+    setAudioModeAsync({
+      playsInSilentMode: true,
     });
-
-    return () => {
-      if (soundRef.current) {
-        soundRef.current.unloadAsync();
-      }
-    };
   }, []);
+
+  // Monitor audio playback status and handle completion
+  useEffect(() => {
+    if (audioStatus.playing === false && audioStatus.currentTime >= audioStatus.duration && audioStatus.duration > 0) {
+      // Playback just finished
+      if (lastPlayedIndexRef.current === currentAudioIndex && isPlayingRef.current) {
+        // Manually trigger next line
+        const nextIndex = currentAudioIndexRef.current + 1;
+        if (nextIndex < (dialogue?.lines.length || 0)) {
+          setCurrentAudioIndex(nextIndex);
+          setCurrentLineIndex(nextIndex);
+        } else {
+          setIsPlaying(false);
+          setCurrentAudioIndex(-1);
+        }
+      }
+    }
+    
+    // Update progress
+    if (audioStatus.duration > 0) {
+      setAudioProgress(audioStatus.currentTime / audioStatus.duration);
+    }
+  }, [audioStatus.playing, audioStatus.currentTime, audioStatus.duration, currentAudioIndex, dialogue]);
+
+  // Auto-play next line when currentAudioIndex changes (from playback completion)
+  useEffect(() => {
+    if (currentAudioIndex >= 0 && isPlayingRef.current && lastPlayedIndexRef.current !== currentAudioIndex) {
+      playLineAudio(currentAudioIndex);
+    }
+  }, [currentAudioIndex]);
 
   const generateDialogue = async () => {
     setIsGenerating(true);
@@ -1128,29 +1155,26 @@ export default function PlaybackScreen() {
     const line = dialogue.lines[index];
     if (!line) return;
 
-    if (soundRef.current) {
-      await soundRef.current.unloadAsync();
-      soundRef.current = null;
-    }
-
     if (line.audioUri) {
       try {
-        const { sound } = await Audio.Sound.createAsync(
-          { uri: line.audioUri },
-          { shouldPlay: true, rate: playbackSpeedRef.current, shouldCorrectPitch: true }
-        );
-        soundRef.current = sound;
-
-        sound.setOnPlaybackStatusUpdate((status) => {
-          if (status.isLoaded) {
-            if (status.didJustFinish) {
-              playNextLine();
-            }
-            if (status.durationMillis) {
-              setAudioProgress(status.positionMillis / status.durationMillis);
-            }
-          }
-        });
+        let audioSource = line.audioUri;
+        
+        // If it's an object with uri property, extract it
+        if (typeof audioSource === 'object' && audioSource !== null && 'uri' in audioSource) {
+          audioSource = audioSource.uri;
+        }
+        
+        // Replace the audio source
+        audioPlayer.replace(audioSource);
+        
+        // Set playback rate
+        audioPlayer.playbackRate = playbackSpeedRef.current;
+        
+        // Start playing
+        audioPlayer.play();
+        
+        // Track which line we just started playing
+        lastPlayedIndexRef.current = index;
       } catch (error) {
         console.error('Error playing audio:', error);
         setTimeout(() => {
@@ -1173,17 +1197,16 @@ export default function PlaybackScreen() {
 
     if (isPlaying) {
       setIsPlaying(false);
-      if (soundRef.current) {
-        await soundRef.current.pauseAsync();
-      }
+      audioPlayer.pause();
     } else {
       setIsPlaying(true);
       if (currentAudioIndex < 0) {
         setCurrentAudioIndex(0);
         setCurrentLineIndex(0);
         await playLineAudio(0);
-      } else if (soundRef.current) {
-        await soundRef.current.playAsync();
+      } else if (audioPlayer.playing === false && audioStatus.currentTime > 0) {
+        // Resume paused audio
+        audioPlayer.play();
       } else {
         await playLineAudio(currentAudioIndex);
       }
@@ -1196,14 +1219,11 @@ export default function PlaybackScreen() {
     setAutoScrollEnabled(true);
 
     setIsPlaying(false);
-    if (soundRef.current) {
-      await soundRef.current.stopAsync();
-      await soundRef.current.unloadAsync();
-      soundRef.current = null;
-    }
+    audioPlayer.pause();
     setCurrentLineIndex(0);
     setCurrentAudioIndex(-1);
     setAudioProgress(0);
+    lastPlayedIndexRef.current = -1;
 
     setTimeout(async () => {
       setIsPlaying(true);
@@ -1237,12 +1257,8 @@ export default function PlaybackScreen() {
     // User tapped a specific line - do NOT re-enable auto-scroll
     // They navigated intentionally, so don't force scroll position
 
-    if (soundRef.current) {
-      await soundRef.current.stopAsync();
-      await soundRef.current.unloadAsync();
-      soundRef.current = null;
-    }
-
+    audioPlayer.pause();
+    
     setCurrentLineIndex(index);
     setCurrentAudioIndex(index);
     currentAudioIndexRef.current = index;
@@ -1401,12 +1417,8 @@ export default function PlaybackScreen() {
     // User tapped progress bar - do NOT re-enable auto-scroll
     // They navigated intentionally, so don't force scroll position
 
-    if (soundRef.current) {
-      await soundRef.current.stopAsync();
-      await soundRef.current.unloadAsync();
-      soundRef.current = null;
-    }
-
+    audioPlayer.pause();
+    
     setCurrentLineIndex(startIndex);
     setCurrentAudioIndex(startIndex);
     currentAudioIndexRef.current = startIndex;

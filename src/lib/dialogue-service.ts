@@ -3,6 +3,7 @@ import { LOCATIONS, LANGUAGES } from './types';
 import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
 import { useDevSettingsStore, type TTSProvider } from './dev-settings-store';
+import { getBundledLesson, getBundledLessonKey, hasBundledLesson, getBundledLessonAsync } from './bundled-lessons';
 
 const OPENAI_API_KEY = process.env.EXPO_PUBLIC_VIBECODE_OPENAI_API_KEY;
 const ELEVENLABS_API_KEY = process.env.EXPO_PUBLIC_VIBECODE_ELEVENLABS_API_KEY;
@@ -630,9 +631,27 @@ export async function generateConversation(
   config: ConversationConfig,
   onProgress?: (progress: number, status: string) => void
 ): Promise<GeneratedDialogue> {
-  // Development mode still uses real API calls for audio, just with limited options
-  // The language/location restrictions are enforced in the UI (index.tsx)
+  // Check if we're in development mode and have a bundled lesson available
+  const appMode = useDevSettingsStore.getState().settings.appMode;
+  
+  if (appMode === 'development') {
+    const lessonKey = getBundledLessonKey(config.language, config.location);
+    if (lessonKey) {
+      onProgress?.(0.3, 'Loading bundled lesson...');
+      
+      try {
+        const bundledLesson = await getBundledLessonAsync(lessonKey);
+        if (bundledLesson) {
+          onProgress?.(1, 'Complete!');
+          return bundledLesson;
+        }
+      } catch (error) {
+        console.error('Failed to load bundled lesson:', error);
+      }
+    }
+  }
 
+  // Fall back to API generation
   onProgress?.(0.1, 'Generating dialogue...');
 
   // Get the TTS provider from dev settings
