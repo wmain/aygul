@@ -1059,17 +1059,62 @@ export default function PlaybackScreen() {
     });
   }, []);
 
-  // Monitor audio playback status and handle completion
+  // Monitor audio playback status and handle completion + line advancement
   useEffect(() => {
+    if (!dialogue || !audioStatus) return;
+    
+    // For section-based audio: Update current line based on playback time
+    if (audioStatus.playing && audioStatus.currentTime > 0) {
+      // Find which line should be highlighted based on current audio time
+      const currentLine = dialogue.lines[currentLineIndex];
+      
+      if (currentLine && currentLine.sectionAudioStart !== undefined) {
+        // Section-based audio: check if we've moved past this line's end time
+        const lineEndTime = currentLine.sectionAudioStart + (currentLine.duration / 1000);
+        
+        if (audioStatus.currentTime >= lineEndTime) {
+          // Move to next line
+          const nextIndex = currentLineIndex + 1;
+          if (nextIndex < dialogue.lines.length) {
+            const nextLine = dialogue.lines[nextIndex];
+            
+            // Only advance if next line is in same section (same audio file)
+            if (nextLine.audioUri === currentLine.audioUri) {
+              setCurrentLineIndex(nextIndex);
+              setCurrentAudioIndex(nextIndex);
+              currentAudioIndexRef.current = nextIndex;
+              // Don't call playLineAudio - let the audio continue naturally
+            } else {
+              // Different section - will be handled by completion logic
+            }
+          }
+        }
+      }
+    }
+    
+    // Handle section completion
     if (audioStatus.playing === false && audioStatus.currentTime >= audioStatus.duration && audioStatus.duration > 0) {
-      // Playback just finished
+      // Section audio finished
       if (lastPlayedIndexRef.current === currentAudioIndex && isPlayingRef.current) {
-        // Manually trigger next line
-        const nextIndex = currentAudioIndexRef.current + 1;
-        if (nextIndex < (dialogue?.lines.length || 0)) {
-          setCurrentAudioIndex(nextIndex);
-          setCurrentLineIndex(nextIndex);
+        // Find next section (next line with different audioUri)
+        const currentLine = dialogue.lines[currentAudioIndex];
+        let nextSectionIndex = currentAudioIndex + 1;
+        
+        // Find the start of the next section
+        while (nextSectionIndex < dialogue.lines.length) {
+          const line = dialogue.lines[nextSectionIndex];
+          if (line.audioUri !== currentLine?.audioUri) {
+            // Found next section
+            break;
+          }
+          nextSectionIndex++;
+        }
+        
+        if (nextSectionIndex < dialogue.lines.length) {
+          setCurrentAudioIndex(nextSectionIndex);
+          setCurrentLineIndex(nextSectionIndex);
         } else {
+          // End of lesson
           setIsPlaying(false);
           setCurrentAudioIndex(-1);
         }
@@ -1080,14 +1125,22 @@ export default function PlaybackScreen() {
     if (audioStatus.duration > 0) {
       setAudioProgress(audioStatus.currentTime / audioStatus.duration);
     }
-  }, [audioStatus.playing, audioStatus.currentTime, audioStatus.duration, currentAudioIndex, dialogue]);
+  }, [audioStatus.playing, audioStatus.currentTime, audioStatus.duration, currentAudioIndex, currentLineIndex, dialogue]);
 
   // Auto-play next line when currentAudioIndex changes (from playback completion)
+  // Only for line-based audio, not section-based
   useEffect(() => {
     if (currentAudioIndex >= 0 && isPlayingRef.current && lastPlayedIndexRef.current !== currentAudioIndex) {
-      playLineAudio(currentAudioIndex);
+      const currentLine = dialogue?.lines[currentAudioIndex];
+      const prevLine = currentAudioIndex > 0 ? dialogue?.lines[currentAudioIndex - 1] : null;
+      
+      // Only auto-play if this is a new section (different audio file)
+      // For same section, audio continues playing naturally
+      if (!currentLine || !prevLine || currentLine.audioUri !== prevLine.audioUri) {
+        playLineAudio(currentAudioIndex);
+      }
     }
-  }, [currentAudioIndex]);
+  }, [currentAudioIndex, dialogue]);
 
   const generateDialogue = async () => {
     setIsGenerating(true);
