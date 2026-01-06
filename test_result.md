@@ -140,13 +140,16 @@ January 6, 2025
 - **implemented**: true
 - **working**: false
 - **file**: "/app/src/lib/section-audio-service.ts"
-- **stuck_count**: 1
+- **stuck_count**: 2
 - **priority**: "high"
-- **needs_retesting**: true
+- **needs_retesting**: false
 - **status_history**:
   - **working**: false
   - **agent**: "testing"
   - **comment**: "❌ CRITICAL: API calls failing with 422 Unprocessable Entity. Root cause: Frontend sends camelCase field names (speakerA, speakerB) but backend expects snake_case (speaker_a, speaker_b). All 7 section audio requests failed. Device cache also fails on web due to expo-file-system not being available on web platform."
+  - **working**: false
+  - **agent**: "testing"
+  - **comment**: "❌ CRITICAL: Cannot test section audio system because lesson generation fails upstream. The /api/generate-dialogue endpoint call fails with 501 error because frontend uses relative URL '/api/generate-dialogue' instead of BACKEND_URL. Code review shows snake_case fix IS implemented (lines 209-210 in section-audio-service.ts) and Cache API fix IS implemented (lines 72-86), but cannot verify in practice due to dialogue generation failure. Backend logs show recent 422 errors still occurring from other sources."
 
 ### Task 3: Device Cache (expo-file-system)
 - **task**: "Device-level caching using expo-file-system"
