@@ -8,6 +8,7 @@ import { getSectionAudio, groupLinesBySection, generateSectionCacheKey } from '.
 
 const OPENAI_API_KEY = process.env.EXPO_PUBLIC_VIBECODE_OPENAI_API_KEY;
 const ELEVENLABS_API_KEY = process.env.EXPO_PUBLIC_VIBECODE_ELEVENLABS_API_KEY;
+const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
 
 // OpenAI TTS voices mapped by speaker name
 // Available voices: alloy, echo, fable, onyx, nova, shimmer
@@ -488,7 +489,7 @@ function parseDialogue(response: string): ParsedLine[] {
 
 async function generateDialogueText(config: ConversationConfig): Promise<ParsedLine[]> {
   // Use backend proxy to avoid CORS issues
-  const response = await fetch('/api/generate-dialogue', {
+  const response = await fetch(`${BACKEND_URL}/api/generate-dialogue`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -521,7 +522,7 @@ async function generateAudioOpenAI(
 ): Promise<{ uri: string; duration: number }> {
   try {
     // Use backend proxy to avoid CORS issues
-    const response = await fetch('/api/tts', {
+    const response = await fetch(`${BACKEND_URL}/api/tts`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -574,7 +575,7 @@ async function generateAudioElevenLabs(
 ): Promise<{ uri: string; duration: number }> {
   try {
     // Use backend proxy to avoid CORS issues
-    const response = await fetch('/api/tts', {
+    const response = await fetch(`${BACKEND_URL}/api/tts`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
