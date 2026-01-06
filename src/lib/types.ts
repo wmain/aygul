@@ -165,6 +165,8 @@ export interface DialogueLine {
   emotion?: string;
   segmentType?: string;
   audioUri?: string;
+  /** For section-based audio: start time within the section audio file (in seconds) */
+  sectionAudioStart?: number;
   startTime: number;
   endTime: number;
   duration: number;
