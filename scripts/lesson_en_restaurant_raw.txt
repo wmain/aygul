@@ -1,0 +1,101 @@
+1|WELCOME|[friendly]|Hello and welcome to today's lesson on dining at a restaurant!  
+1|WELCOME|[enthusiastic]|Today, we'll learn some important vocabulary and phrases you can use when you eat out.  
+1|WELCOME|[inviting]|Are you ready to dive into the world of restaurants?  
+1|WELCOME|[engaging]|Let's start by exploring some key words and phrases related to dining!  
+1|WELCOME|[cheerful]|Whether you're ordering food, asking questions, or making reservations, we've got you covered.  
+1|WELCOME|[supportive]|Don't worry if you don't know everything right away; practice makes perfect!  
+1|WELCOME|[encouraging]|By the end of this lesson, you'll feel more confident when dining out.  
+1|WELCOME|[excited]|So, let’s get started and have some fun learning together!  
+
+2|VOCAB|[informative]|First, let's go over some essential restaurant vocabulary.  
+2|VOCAB|[informative]|1. Menu - A list of food and drinks available at the restaurant.  
+2|VOCAB|[informative]|2. Reservation - An arrangement to have a table set aside for you at a specific time.  
+2|VOCAB|[informative]|3. Waiter/Waitress - The person who takes your order and serves your food.  
+2|VOCAB|[informative]|4. Bill - The statement of the money you owe for your meal.  
+2|VOCAB|[informative]|5. Tip - Extra money given to the waiter for good service.  
+2|VOCAB|[informative]|6. Appetizer - A small dish served before the main course.  
+2|VOCAB|[informative]|7. Main course - The primary dish in a meal.  
+2|VOCAB|[informative]|8. Dessert - A sweet course served at the end of a meal.  
+2|VOCAB|[informative]|9. Special - A dish that is featured for a limited time at a restaurant.  
+2|VOCAB|[informative]|10. Takeout - Food that you order to eat elsewhere.  
+2|VOCAB|[informative]|11. Buffet - A style of dining where guests serve themselves from a variety of dishes.  
+2|VOCAB|[informative]|12. Chef - The person who cooks food in the restaurant.  
+2|VOCAB|[informative]|13. Reservation - A booking made to secure a table at the restaurant.  
+2|VOCAB|[informative]|14. Allergy - A medical condition that can cause a severe reaction to certain foods.  
+2|VOCAB|[informative]|15. Beverage - Any drink, such as water, soda, or wine, served at the restaurant.  
+
+1|SLOW|[clear]|Now, let's practice a slow dialogue to help you understand the phrases better.  
+2|SLOW|[calm]|Waiter: Good evening! How many people are in your party?  
+1|SLOW|[clear]|Customer: We have four people.  
+2|SLOW|[calm]|Waiter: Great! Do you have a reservation?  
+1|SLOW|[clear]|Customer: Yes, we do. It's under the name Smith.  
+2|SLOW|[calm]|Waiter: Perfect! Right this way, please.  
+1|SLOW|[clear]|Customer: Thank you!  
+2|SLOW|[calm]|Waiter: Here are your menus. Can I get you something to drink?  
+1|SLOW|[clear]|Customer: Yes, I would like some water, please.  
+2|SLOW|[calm]|Waiter: And for you?  
+1|SLOW|[clear]|Customer: I’ll have a soda.  
+2|SLOW|[calm]|Waiter: Alright, I will be back with your drinks shortly.  
+1|SLOW|[clear]|Customer: Thank you!  
+2|SLOW|[calm]|Waiter: You’re welcome!  
+
+1|BREAKDOWN|[informative]|Let’s break down those phrases a bit.  
+2|BREAKDOWN|[informative]|“Good evening!” is a polite way to greet someone at dinner time.  
+1|BREAKDOWN|[informative]|“How many people are in your party?” asks how many guests are dining together.  
+2|BREAKDOWN|[informative]|“Do you have a reservation?” checks if you booked a table in advance.  
+1|BREAKDOWN|[informative]|“It’s under the name Smith” means that you made a reservation using that name.  
+2|BREAKDOWN|[informative]|“Right this way, please” is a polite invitation to follow someone to your table.  
+1|BREAKDOWN|[informative]|“Can I get you something to drink?” is how the waiter offers beverages to the customers.  
+2|BREAKDOWN|[informative]|“I’ll have a soda” indicates your choice of drink.  
+1|BREAKDOWN|[informative]|“I will be back with your drinks shortly” assures you that the waiter will return soon.  
+
+2|NATURAL|[friendly]|Waiter: Good evening! Welcome to our restaurant. How can I assist you tonight?  
+1|NATURAL|[cheerful]|Customer: Hi! We have a reservation for four under the name Smith.  
+2|NATURAL|[friendly]|Waiter: Ah, yes! Right this way. Here are your menus.  
+1|NATURAL|[curious]|Customer: Thank you! Could you tell us about today’s specials?  
+2|NATURAL|[helpful]|Waiter: Absolutely! Today we have a grilled salmon with asparagus and a creamy risotto.  
+1|NATURAL|[interested]|Customer: That sounds delicious! I think I’ll try the salmon.  
+2|NATURAL|[friendly]|Waiter: Excellent choice! And for you?  
+1|NATURAL|[thoughtful]|Customer: I will have the risotto, please.  
+2|NATURAL|[friendly]|Waiter: Perfect! Would you like to start with an appetizer?  
+1|NATURAL|[enthusiastic]|Customer: Yes, let’s have the garlic bread for the table.  
+2|NATURAL|[friendly]|Waiter: Great choice! I’ll put that in for you. What would you like to drink?  
+1|NATURAL|[curious]|Customer: I’ll have a glass of white wine.  
+2|NATURAL|[friendly]|Waiter: Very nice! And for you?  
+1|NATURAL|[thoughtful]|Customer: Just water for me, thanks.  
+2|NATURAL|[friendly]|Waiter: Sure thing! I’ll be right back with your drinks and the appetizer.  
+1|NATURAL|[casual]|Customer: Thank you!  
+2|NATURAL|[friendly]|Waiter: You’re welcome! Enjoy your evening.  
+1|NATURAL|[content]|Customer: This place has a lovely atmosphere.  
+2|NATURAL|[agreeable]|Waiter: Yes, we strive to make it cozy and inviting for our guests.  
+1|NATURAL|[curious]|Customer: How long have you been working here?  
+2|NATURAL|[friendly]|Waiter: I've been here for about three years now. It’s a great environment.  
+1|NATURAL|[interested]|Customer: That’s awesome! What’s your favorite dish on the menu?  
+2|NATURAL|[enthusiastic]|Waiter: Personally, I love the steak; it’s grilled to perfection!  
+1|NATURAL|[thoughtful]|Customer: I’ll have to try that next time!  
+2|NATURAL|[friendly]|Waiter: Definitely! I’ll be back shortly with your drinks and the garlic bread.  
+
+2|QUIZ|[engaging]|Now, let’s do a short quiz to reinforce what you’ve learned.  
+1|QUIZ|[challenging]|1. What do you call the list of food and drinks at a restaurant?  
+2|QUIZ|[informative]|Answer: Menu.  
+1|QUIZ|[challenging]|2. Who takes your order?  
+2|QUIZ|[informative]|Answer: Waiter/Waitress.  
+1|QUIZ|[challenging]|3. What is the extra money you give for good service?  
+2|QUIZ|[informative]|Answer: Tip.  
+1|QUIZ|[challenging]|4. What is the primary dish in a meal called?  
+2|QUIZ|[informative]|Answer: Main course.  
+1|QUIZ|[challenging]|5. What do you call food ordered to eat elsewhere?  
+2|QUIZ|[informative]|Answer: Takeout.  
+1|QUIZ|[challenging]|6. What do you call a booking made for a table?  
+2|QUIZ|[informative]|Answer: Reservation.  
+1|QUIZ|[challenging]|7. What is a small dish served before the main course?  
+2|QUIZ|[informative]|Answer: Appetizer.  
+1|QUIZ|[challenging]|8. What do you call a style of dining where guests serve themselves?  
+2|QUIZ|[informative]|Answer: Buffet.  
+
+1|CULTURAL|[informative]|Finally, let's discuss some cultural notes about dining in English-speaking countries.  
+2|CULTURAL|[informative]|1. Tipping is customary in many restaurants; around 15-20% is standard.  
+1|CULTURAL|[informative]|2. In some cultures, it’s common to have a drink before the meal, often at the bar.  
+2|CULTURAL|[informative]|3. Reservations are recommended, especially on weekends or at popular restaurants.  
+1|CULTURAL|[informative]|4. It’s polite to wait for everyone at the table to be served before starting to eat.  
+2|CULTURAL|[informative]|5. Asking about food allergies is important and should always be done before ordering.  
