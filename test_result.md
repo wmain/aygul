@@ -240,7 +240,7 @@ January 6, 2025
 ### Task 8: Dialogue Generation API Call
 - **task**: "Frontend calls /api/generate-dialogue to generate lesson content"
 - **implemented**: true
-- **working**: false
+- **working**: true
 - **file**: "/app/src/lib/dialogue-service.ts"
 - **stuck_count**: 0
 - **priority**: "high"
@@ -249,6 +249,9 @@ January 6, 2025
   - **working**: false
   - **agent**: "testing"
   - **comment**: "❌ CRITICAL: Dialogue generation fails with 501 error. Frontend uses relative URL '/api/generate-dialogue' (line 491) which calls frontend server (Python HTTP server on port 3000) instead of backend. Should use EXPO_PUBLIC_BACKEND_URL environment variable. Backend endpoint works correctly when called directly (verified with curl). This blocks all lesson generation and prevents testing of section audio system."
+  - **working**: true
+  - **agent**: "testing"
+  - **comment**: "✅ VERIFIED: Dialogue generation working correctly! Line 492 in dialogue-service.ts correctly uses ${BACKEND_URL}/api/generate-dialogue where BACKEND_URL is from environment variable (line 11). Backend logs show successful 200 OK responses for dialogue generation. No 501 errors detected. Lesson content generated successfully with all sections."
 
 ---
 
