@@ -280,6 +280,14 @@ January 6, 2025
 - **agent**: "testing"
 - **message**: "Additional issue: Device cache (expo-file-system) not compatible with web platform. Needs web-specific implementation using IndexedDB or localStorage."
 
+### Message 5
+- **agent**: "testing"
+- **message**: "Re-testing after fixes: Code review confirms both fixes ARE implemented: 1) snake_case fields (speaker_a, speaker_b) in section-audio-service.ts lines 209-210, 2) Cache API for web in lines 72-86 and 111-124. However, cannot verify in practice because lesson generation fails upstream."
+
+### Message 6
+- **agent**: "testing"
+- **message**: "BLOCKING ISSUE FOUND: /api/generate-dialogue call fails with 501 error. Frontend uses relative URL '/api/generate-dialogue' instead of BACKEND_URL, causing it to call the frontend server (Python HTTP server) which doesn't support POST. This prevents all lesson generation and blocks testing of section audio system. Backend endpoint works correctly when called directly."
+
 ---
 
 ## Test Coverage Summary
