@@ -1,16 +1,20 @@
 /**
  * Section-Based Audio Service
  * Handles 3-tier caching for section audio:
- * 1. Device cache (expo-file-system)
+ * 1. Device cache (expo-file-system for native, IndexedDB for web)
  * 2. Server cache (backend API + MongoDB)
  * 3. API generation (ElevenLabs)
  */
 
 import * as FileSystem from 'expo-file-system';
+import { Platform } from 'react-native';
 import type { DialogueLine, LessonSegmentType } from './types';
 
 const CACHE_DIR = `${FileSystem.documentDirectory}audio-cache/`;
 const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
+
+// Web-specific caching using Cache API
+const WEB_CACHE_NAME = 'audio-section-cache-v1';
 
 interface SectionAudioResponse {
   cacheKey: string;
@@ -61,19 +65,37 @@ export function generateSectionCacheKey(
 
 /**
  * Check if section audio exists in device cache
+ * Uses expo-file-system on native, Cache API on web
  */
 export async function getDeviceCachedAudio(cacheKey: string): Promise<string | null> {
   try {
-    const filePath = `${CACHE_DIR}${cacheKey}.mp3`;
-    const fileInfo = await FileSystem.getInfoAsync(filePath);
-    
-    if (fileInfo.exists) {
-      console.log(`[Device Cache] Hit: ${cacheKey}`);
-      return filePath;
+    if (Platform.OS === 'web') {
+      // Web: Use Cache API
+      const cache = await caches.open(WEB_CACHE_NAME);
+      const cachedResponse = await cache.match(cacheKey);
+      
+      if (cachedResponse) {
+        console.log(`[Device Cache] Web hit: ${cacheKey}`);
+        // Convert cached response to blob URL
+        const blob = await cachedResponse.blob();
+        return URL.createObjectURL(blob);
+      }
+      
+      console.log(`[Device Cache] Web miss: ${cacheKey}`);
+      return null;
+    } else {
+      // Native: Use expo-file-system
+      const filePath = `${CACHE_DIR}${cacheKey}.mp3`;
+      const fileInfo = await FileSystem.getInfoAsync(filePath);
+      
+      if (fileInfo.exists) {
+        console.log(`[Device Cache] Native hit: ${cacheKey}`);
+        return filePath;
+      }
+      
+      console.log(`[Device Cache] Native miss: ${cacheKey}`);
+      return null;
     }
-    
-    console.log(`[Device Cache] Miss: ${cacheKey}`);
-    return null;
   } catch (error) {
     console.error('[Device Cache] Error:', error);
     return null;
@@ -82,28 +104,44 @@ export async function getDeviceCachedAudio(cacheKey: string): Promise<string | n
 
 /**
  * Download and cache audio file to device
+ * Uses expo-file-system on native, Cache API on web
  */
 export async function cacheAudioToDevice(cacheKey: string, audioUrl: string): Promise<string> {
   try {
-    // Ensure cache directory exists
-    const dirInfo = await FileSystem.getInfoAsync(CACHE_DIR);
-    if (!dirInfo.exists) {
-      await FileSystem.makeDirectoryAsync(CACHE_DIR, { intermediates: true });
+    if (Platform.OS === 'web') {
+      // Web: Use Cache API
+      console.log(`[Device Cache] Web caching: ${cacheKey}`);
+      
+      const response = await fetch(audioUrl);
+      const cache = await caches.open(WEB_CACHE_NAME);
+      await cache.put(cacheKey, response.clone());
+      
+      // Return blob URL for playback
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      
+      console.log(`[Device Cache] Web cached: ${cacheKey}`);
+      return blobUrl;
+    } else {
+      // Native: Use expo-file-system
+      const dirInfo = await FileSystem.getInfoAsync(CACHE_DIR);
+      if (!dirInfo.exists) {
+        await FileSystem.makeDirectoryAsync(CACHE_DIR, { intermediates: true });
+      }
+      
+      const filePath = `${CACHE_DIR}${cacheKey}.mp3`;
+      
+      console.log(`[Device Cache] Native downloading: ${cacheKey}`);
+      
+      const downloadResult = await FileSystem.downloadAsync(audioUrl, filePath);
+      
+      if (downloadResult.status === 200) {
+        console.log(`[Device Cache] Native cached: ${cacheKey}`);
+        return filePath;
+      }
+      
+      throw new Error(`Download failed with status ${downloadResult.status}`);
     }
-    
-    const filePath = `${CACHE_DIR}${cacheKey}.mp3`;
-    
-    console.log(`[Device Cache] Downloading: ${cacheKey}`);
-    
-    // Download file
-    const downloadResult = await FileSystem.downloadAsync(audioUrl, filePath);
-    
-    if (downloadResult.status === 200) {
-      console.log(`[Device Cache] Cached: ${cacheKey}`);
-      return filePath;
-    }
-    
-    throw new Error(`Download failed with status ${downloadResult.status}`);
   } catch (error) {
     console.error('[Device Cache] Download error:', error);
     throw error;
@@ -228,10 +266,17 @@ export function groupLinesBySection(lines: DialogueLine[]): Map<string, Dialogue
  */
 export async function clearDeviceCache(): Promise<void> {
   try {
-    const dirInfo = await FileSystem.getInfoAsync(CACHE_DIR);
-    if (dirInfo.exists) {
-      await FileSystem.deleteAsync(CACHE_DIR, { idempotent: true });
-      console.log('[Device Cache] Cleared');
+    if (Platform.OS === 'web') {
+      // Web: Clear Cache API
+      await caches.delete(WEB_CACHE_NAME);
+      console.log('[Device Cache] Web cleared');
+    } else {
+      // Native: Delete file directory
+      const dirInfo = await FileSystem.getInfoAsync(CACHE_DIR);
+      if (dirInfo.exists) {
+        await FileSystem.deleteAsync(CACHE_DIR, { idempotent: true });
+        console.log('[Device Cache] Native cleared');
+      }
     }
   } catch (error) {
     console.error('[Device Cache] Clear error:', error);
