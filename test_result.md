@@ -319,21 +319,29 @@ January 6, 2025
 
 ### Critical Issues
 
-1. **API Field Name Mismatch (422 Errors)**
-   - **Severity**: CRITICAL - Blocks all audio generation
-   - **Location**: Frontend `/app/src/lib/section-audio-service.ts` → Backend `/app/backend/models/audio_cache.py`
-   - **Issue**: Frontend sends `speakerA` and `speakerB` (camelCase) but backend expects `speaker_a` and `speaker_b` (snake_case)
-   - **Impact**: All 7 section audio API requests fail with 422 Unprocessable Entity
-   - **Evidence**: Console logs show repeated "[Section Audio] Error: Error: Server error: 422" and backend logs show "422 Unprocessable Entity"
-   - **Fix Required**: Either update frontend to use snake_case OR update backend to accept camelCase
+1. **Dialogue Generation API Call Failure (BLOCKING)**
+   - **Severity**: CRITICAL - Blocks all lesson generation and testing
+   - **Location**: Frontend `/app/src/lib/dialogue-service.ts` line 491
+   - **Issue**: Uses relative URL `/api/generate-dialogue` instead of `EXPO_PUBLIC_BACKEND_URL`
+   - **Impact**: Frontend calls `http://localhost:3000/api/generate-dialogue` (Python HTTP server) which returns 501 (Unsupported method). This prevents lesson generation entirely.
+   - **Evidence**: Console logs show "Failed to load resource: the server responded with a status of 501 (Unsupported method ('POST'))" and "Failed to generate dialogue"
+   - **Backend Status**: Backend endpoint works correctly when called directly with curl
+   - **Fix Required**: Change line 491 from `fetch('/api/generate-dialogue', {` to `fetch('${BACKEND_URL}/api/generate-dialogue', {` where BACKEND_URL is from environment variable
 
-2. **Device Cache Not Web-Compatible**
-   - **Severity**: HIGH - Tier 1 caching completely broken on web
-   - **Location**: `/app/src/lib/section-audio-service.ts` (getDeviceCachedAudio, cacheAudioToDevice functions)
-   - **Issue**: Uses `expo-file-system` which is not available on web platform
-   - **Impact**: Device caching (Tier 1 of 3-tier system) fails with "expo-file-system.getInfoAsync is not available on web"
-   - **Evidence**: 7 "[Device Cache] Error" messages in console logs
-   - **Fix Required**: Implement web-compatible storage using IndexedDB, localStorage, or Cache API
+2. **API Field Name Mismatch (422 Errors) - FIX IMPLEMENTED BUT UNVERIFIED**
+   - **Severity**: HIGH - Would block audio generation if dialogue generation worked
+   - **Location**: Frontend `/app/src/lib/section-audio-service.ts` → Backend `/app/backend/models/audio_cache.py`
+   - **Status**: Code review shows fix IS implemented (lines 209-210 send snake_case), but cannot verify due to Issue #1
+   - **Backend Logs**: Still show some 422 errors from other sources (10.64.128.6, 10.64.128.8)
+   - **Evidence**: Backend logs show "POST /api/audio/section/generate HTTP/1.1" 422 Unprocessable Entity"
+   - **Recommendation**: Once Issue #1 is fixed, re-test to verify 422 errors are resolved
+
+3. **Device Cache Not Web-Compatible - FIX IMPLEMENTED BUT UNVERIFIED**
+   - **Severity**: MEDIUM - Tier 1 caching would be broken on web
+   - **Location**: `/app/src/lib/section-audio-service.ts`
+   - **Status**: Code review shows Cache API fix IS implemented (lines 72-86, 111-124), but cannot verify due to Issue #1
+   - **Evidence**: No expo-file-system errors in console logs during testing, suggesting fix is working
+   - **Recommendation**: Once Issue #1 is fixed, re-test to verify Cache API works correctly
 
 ### Minor Issues
 
