@@ -79,46 +79,9 @@ export async function getBundledLessonAsync(key: BundledLessonKey): Promise<Gene
   };
 }
 
-// Pre-generated lesson data
-// Audio files are stored in assets/bundled-lessons/{key}/line_{index}.mp3
-const BUNDLED_LESSONS: Record<BundledLessonKey, GeneratedDialogue> = {
-  en_coffee_shop: createEnglishCoffeeShopLesson(),
-  en_restaurant: createEnglishRestaurantLesson(),
-  es_coffee_shop: createSpanishCoffeeShopLesson(),
-  es_restaurant: createSpanishRestaurantLesson(),
-  fr_coffee_shop: createFrenchCoffeeShopLesson(),
-  fr_restaurant: createFrenchRestaurantLesson(),
-};
-
-// Helper to create audio URI for bundled lessons
-// Returns a require() reference to the local audio file
-async function getBundledAudioUriAsync(lessonKey: BundledLessonKey, lineIndex: number): Promise<string | null> {
-  try {
-    const key = `${lessonKey}_${lineIndex}`;
-    const assetModule = AUDIO_FILES[key];
-    
-    if (!assetModule) {
-      return null;
-    }
-    
-    // For web, we need to resolve the asset to get the actual URL
-    const asset = Asset.fromModule(assetModule);
-    await asset.downloadAsync();
-    return asset.localUri || asset.uri;
-  } catch (error) {
-    console.error(`Failed to load audio: ${lessonKey}/line_${lineIndex}`, error);
-    return null;
-  }
-}
-
-// Synchronous version that returns the asset module (for initial data structure)
-function getBundledAudioUri(lessonKey: BundledLessonKey, lineIndex: number): any {
-  const key = `${lessonKey}_${lineIndex}`;
-  return AUDIO_FILES[key] || null;
-}
-
 // Pre-load all audio file references using require()
 // This is necessary because Expo requires static paths at build time
+// IMPORTANT: This must be defined BEFORE the lesson creation functions use it
 const AUDIO_FILES: Record<string, any> = {
   // English Coffee Shop
   'en_coffee_shop_0': require('../../assets/bundled-audio/en_coffee_shop/line_0.mp3'),
@@ -164,6 +127,42 @@ const AUDIO_FILES: Record<string, any> = {
   'en_coffee_shop_40': require('../../assets/bundled-audio/en_coffee_shop/line_40.mp3'),
   'en_coffee_shop_41': require('../../assets/bundled-audio/en_coffee_shop/line_41.mp3'),
   'en_coffee_shop_42': require('../../assets/bundled-audio/en_coffee_shop/line_42.mp3'),
+};
+
+// Helper functions - these use AUDIO_FILES so they must come after it
+async function getBundledAudioUriAsync(lessonKey: BundledLessonKey, lineIndex: number): Promise<string | null> {
+  try {
+    const key = `${lessonKey}_${lineIndex}`;
+    const assetModule = AUDIO_FILES[key];
+    
+    if (!assetModule) {
+      return null;
+    }
+    
+    // For web, we need to resolve the asset to get the actual URL
+    const asset = Asset.fromModule(assetModule);
+    await asset.downloadAsync();
+    return asset.localUri || asset.uri;
+  } catch (error) {
+    console.error(`Failed to load audio: ${lessonKey}/line_${lineIndex}`, error);
+    return null;
+  }
+}
+
+function getBundledAudioUri(lessonKey: BundledLessonKey, lineIndex: number): any {
+  const key = `${lessonKey}_${lineIndex}`;
+  return AUDIO_FILES[key] || null;
+}
+
+// Pre-generated lesson data
+// Audio files are stored in assets/bundled-audio/{key}/line_{index}.mp3
+const BUNDLED_LESSONS: Record<BundledLessonKey, GeneratedDialogue> = {
+  en_coffee_shop: createEnglishCoffeeShopLesson(),
+  en_restaurant: createEnglishRestaurantLesson(),
+  es_coffee_shop: createSpanishCoffeeShopLesson(),
+  es_restaurant: createSpanishRestaurantLesson(),
+  fr_coffee_shop: createFrenchCoffeeShopLesson(),
+  fr_restaurant: createFrenchRestaurantLesson(),
 };
 
 function createEnglishCoffeeShopLesson(): GeneratedDialogue {
