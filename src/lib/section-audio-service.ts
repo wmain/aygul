@@ -216,7 +216,18 @@ export async function getSectionAudio(
       throw new Error(`Server error: ${response.status}`);
     }
     
-    const data: SectionAudioResponse = await response.json();
+    const rawData: any = await response.json();
+    
+    // Map snake_case backend response to camelCase
+    const data: SectionAudioResponse = {
+      cacheKey: rawData.cache_key,
+      audioUrl: rawData.audio_url,
+      timestamps: rawData.timestamps,
+      duration: rawData.duration,
+      isCached: rawData.is_cached
+    };
+    
+    console.log('[Section Audio] Response mapped:', { audioUrl: data.audioUrl, isCached: data.isCached });
     
     if (data.isCached) {
       onProgress?.(0.7, 'Found on server');
