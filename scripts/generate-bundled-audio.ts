@@ -144,8 +144,15 @@ async function main() {
   console.log('Starting bundled audio generation...');
   console.log('Using ElevenLabs API with eleven_flash_v2_5 model\n');
 
-  // Generate English Coffee Shop
+  // Generate English Coffee Shop (already done, will skip existing files)
   await generateLessonAudio('en_coffee_shop', EN_COFFEE_SHOP_LINES);
+
+  // TODO: Add other lessons here
+  // await generateLessonAudio('en_restaurant', EN_RESTAURANT_LINES);
+  // await generateLessonAudio('es_coffee_shop', ES_COFFEE_SHOP_LINES);
+  // await generateLessonAudio('es_restaurant', ES_RESTAURANT_LINES);
+  // await generateLessonAudio('fr_coffee_shop', FR_COFFEE_SHOP_LINES);
+  // await generateLessonAudio('fr_restaurant', FR_RESTAURANT_LINES);
 
   console.log('\n✓ Audio generation complete!');
   console.log('Files saved to: assets/bundled-audio/');
