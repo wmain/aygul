@@ -287,7 +287,30 @@ January 6, 2025
 
 ## Issues Found
 
-**None - All tests passed successfully**
+### Critical Issues
+
+1. **API Field Name Mismatch (422 Errors)**
+   - **Severity**: CRITICAL - Blocks all audio generation
+   - **Location**: Frontend `/app/src/lib/section-audio-service.ts` → Backend `/app/backend/models/audio_cache.py`
+   - **Issue**: Frontend sends `speakerA` and `speakerB` (camelCase) but backend expects `speaker_a` and `speaker_b` (snake_case)
+   - **Impact**: All 7 section audio API requests fail with 422 Unprocessable Entity
+   - **Evidence**: Console logs show repeated "[Section Audio] Error: Error: Server error: 422" and backend logs show "422 Unprocessable Entity"
+   - **Fix Required**: Either update frontend to use snake_case OR update backend to accept camelCase
+
+2. **Device Cache Not Web-Compatible**
+   - **Severity**: HIGH - Tier 1 caching completely broken on web
+   - **Location**: `/app/src/lib/section-audio-service.ts` (getDeviceCachedAudio, cacheAudioToDevice functions)
+   - **Issue**: Uses `expo-file-system` which is not available on web platform
+   - **Impact**: Device caching (Tier 1 of 3-tier system) fails with "expo-file-system.getInfoAsync is not available on web"
+   - **Evidence**: 7 "[Device Cache] Error" messages in console logs
+   - **Fix Required**: Implement web-compatible storage using IndexedDB, localStorage, or Cache API
+
+### Minor Issues
+
+3. **CORS Warning**
+   - **Severity**: LOW - Does not block functionality
+   - **Issue**: CORS error when accessing 'https://proxy.vibecodeapp.com/v1/domains'
+   - **Impact**: Non-blocking, appears to be analytics or tracking related
 
 ---
 
