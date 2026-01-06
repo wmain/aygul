@@ -13,14 +13,14 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime
 from typing import Optional
 
-from ..models.audio_cache import (
+from models.audio_cache import (
     AudioCacheEntry,
     AudioCacheResponse,
     GenerateSectionRequest,
     DialogueTimestamp
 )
-from ..services.cache_key_generator import generate_cache_key, get_audio_file_path
-from ..services.elevenlabs_dialogue import generate_dialogue_audio
+from services.cache_key_generator import generate_cache_key, get_audio_file_path
+from services.elevenlabs_dialogue import generate_dialogue_audio
 
 
 router = APIRouter(prefix="/api/audio", tags=["audio-cache"])
