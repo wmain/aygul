@@ -1,0 +1,96 @@
+1|WELCOME|[cheerful]|Bienvenue au restaurant! 
+2|WELCOME|[cheerful]|Aujourd'hui, nous allons apprendre à commander au restaurant en français. 
+3|WELCOME|[excited]|Êtes-vous prêts à découvrir des phrases utiles? 
+4|WELCOME|[enthusiastic]|Allons-y! 
+5|WELCOME|[welcoming]|D'abord, sachez que le service est important en France. 
+6|WELCOME|[friendly]|N'oubliez pas de dire "s'il vous plaît" et "merci". 
+7|WELCOME|[supportive]|C'est un signe de politesse! 
+8|WELCOME|[encouraging]|Commençons par le vocabulaire!
+
+9|VOCAB|[informative]|Voici quelques mots utiles: 
+10|VOCAB|[informative]|Menu - le menu 
+11|VOCAB|[informative]|Serveur - le serveur 
+12|VOCAB|[informative]|Table - la table 
+13|VOCAB|[informative]|Plat - le plat 
+14|VOCAB|[informative]|Boisson - la boisson 
+15|VOCAB|[informative]|Addition - l'addition 
+16|VOCAB|[informative]|Entrée - l'entrée 
+17|VOCAB|[informative]|Dessert - le dessert 
+18|VOCAB|[informative]|Réservation - la réservation 
+19|VOCAB|[informative]|Buffet - le buffet 
+20|VOCAB|[informative]|Spécialité - la spécialité 
+21|VOCAB|[informative]|Cuisine - la cuisine 
+22|VOCAB|[informative]|Plat végétarien - le plat végétarien 
+23|VOCAB|[informative]|Apéritif - l'apéritif 
+24|VOCAB|[informative]|Carte des vins - la carte des vins 
+
+25|SLOW|[calm]|Maintenant, répétons lentement les phrases importantes. 
+26|SLOW|[calm]|Je voudrais une table pour deux, s'il vous plaît. 
+27|SLOW|[calm]|La carte, s'il vous plaît. 
+28|SLOW|[calm]|Quelles sont les spécialités du jour? 
+29|SLOW|[calm]|Je prends le plat du jour. 
+30|SLOW|[calm]|Pour boire, je voudrais un verre d'eau. 
+31|SLOW|[calm]|L'addition, s'il vous plaît. 
+32|SLOW|[calm]|Merci beaucoup! 
+33|SLOW|[calm]|C'était délicieux! 
+34|SLOW|[calm]|Avez-vous un dessert à recommander? 
+35|SLOW|[calm]|Je préfère un plat végétarien. 
+36|SLOW|[calm]|Puis-je avoir le menu des desserts? 
+37|SLOW|[calm]|Est-ce que ce plat contient des noix? 
+38|SLOW|[calm]|Où est la salle de bain, s'il vous plaît? 
+39|SLOW|[calm]|Je suis allergique au gluten. 
+40|SLOW|[calm]|Je voudrais une réservation pour demain. 
+
+41|BREAKDOWN|[analytical]|Analysons maintenant ces phrases. 
+42|BREAKDOWN|[analytical]|"Je voudrais" signifie "I would like". 
+43|BREAKDOWN|[analytical]|"Une table pour deux" veut dire "a table for two". 
+44|BREAKDOWN|[analytical]|"La carte, s'il vous plaît" est "the menu, please". 
+45|BREAKDOWN|[analytical]|"Quelles sont les spécialités" signifie "What are the specialties?". 
+46|BREAKDOWN|[analytical]|"Je prends" traduit par "I will have". 
+47|BREAKDOWN|[analytical]|"Pour boire" veut dire "to drink". 
+48|BREAKDOWN|[analytical]|"L'addition, s'il vous plaît" est "the bill, please". 
+49|BREAKDOWN|[analytical]|"C'était délicieux" signifie "It was delicious". 
+50|BREAKDOWN|[analytical]|"Avez-vous un dessert" veut dire "Do you have a dessert?". 
+51|BREAKDOWN|[analytical]|"Je préfère" traduit par "I prefer". 
+52|BREAKDOWN|[analytical]|"Puis-je avoir" veut dire "Can I have?". 
+
+53|NATURAL|[conversational]|Quand vous entrez dans un restaurant, dites bonsoir au serveur. 
+54|NATURAL|[conversational]|Regardez le menu et posez des questions si nécessaire. 
+55|NATURAL|[conversational]|Il est courant de commencer par un apéritif. 
+56|NATURAL|[conversational]|Essayez de goûter des plats régionaux. 
+57|NATURAL|[conversational]|N'oubliez pas de demander des recommandations! 
+58|NATURAL|[friendly]|Si vous êtes satisfait, dites-le au personnel. 
+59|NATURAL|[friendly]|C'est très apprécié par les restaurateurs. 
+60|NATURAL|[friendly]|Utilisez toujours "s'il vous plaît" et "merci". 
+61|NATURAL|[friendly]|Cela crée une atmosphère agréable. 
+62|NATURAL|[friendly]|Si vous avez une allergie, informez le serveur. 
+63|NATURAL|[friendly]|Les Français aiment partager leur culture culinaire. 
+64|NATURAL|[friendly]|Essayez de parler en français, même un peu! 
+65|NATURAL|[friendly]|Cela vous aidera à vous sentir plus à l'aise. 
+66|NATURAL|[friendly]|Après le repas, il est normal de demander un café. 
+67|NATURAL|[friendly]|Les repas peuvent être longs, savourez chaque instant. 
+68|NATURAL|[friendly]|Ne soyez pas pressé; le repas est une expérience. 
+69|NATURAL|[friendly]|Enfin, rappelez-vous, les pourboires ne sont pas obligatoires. 
+
+70|QUIZ|[playful]|Maintenant, un petit quiz! 
+71|QUIZ|[playful]|Comment dit-on "the menu" en français? 
+72|QUIZ|[playful]|Qu'est-ce que "l'addition" signifie? 
+73|QUIZ|[playful]|Comment demander une table pour deux? 
+74|QUIZ|[playful]|Quel mot utilisez-vous pour "water"? 
+75|QUIZ|[playful]|Comment dire "I would like the bill"? 
+76|QUIZ|[playful]|Qu'est-ce que vous pouvez demander si vous êtes allergique? 
+77|QUIZ|[playful]|Comment demander le plat du jour? 
+78|QUIZ|[playful]|Quel est le mot pour "dessert"? 
+79|QUIZ|[playful]|Comment exprimer que vous avez aimé le repas? 
+80|QUIZ|[playful]|Que dites-vous en entrant dans un restaurant? 
+81|QUIZ|[playful]|Comment dire "Do you have a vegetarian dish?"? 
+82|QUIZ|[playful]|Quel mot utilise-t-on pour "waiter"? 
+
+83|CULTURAL|[enlightening]|Sachez que les repas en France sont souvent longs. 
+84|CULTURAL|[enlightening]|Les Français prennent le temps de savourer leur nourriture. 
+85|CULTURAL|[enlightening]|Il est courant de partager des plats. 
+86|CULTURAL|[enlightening]|La gastronomie est une fierté nationale. 
+87|CULTURAL|[enlightening]|Les restaurants peuvent avoir des heures d'ouverture variées. 
+88|CULTURAL|[enlightening]|Il est préférable de réserver à l'avance. 
+89|CULTURAL|[enlightening]|Les pourboires sont généralement inclus dans l'addition. 
+90|CULTURAL|[enlightening]|Les Français aiment discuter autour de la table.
