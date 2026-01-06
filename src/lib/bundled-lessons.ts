@@ -12,10 +12,8 @@
 
 import type { GeneratedDialogue, DialogueLine, Language, Location } from './types';
 import { Asset } from 'expo-asset';
-<<<<<<< progress-2
 import { EN_RESTAURANT_LINES } from './bundled-lesson-data-en-restaurant';
-=======
->>>>>>> main
+
 
 // Key format: `${language}_${location}`
 export type BundledLessonKey =
@@ -46,7 +44,7 @@ export function getBundledLesson(key: BundledLessonKey): GeneratedDialogue | nul
 export async function getBundledLessonAsync(key: BundledLessonKey): Promise<GeneratedDialogue | null> {
   const lesson = BUNDLED_LESSONS[key];
   if (!lesson) return null;
-  
+
   // Resolve all audio URIs to actual URLs for web
   const linesWithResolvedAudio = await Promise.all(
     lesson.lines.map(async (line) => {
@@ -61,7 +59,7 @@ export async function getBundledLessonAsync(key: BundledLessonKey): Promise<Gene
       return line;
     })
   );
-  
+
   return {
     ...lesson,
     lines: linesWithResolvedAudio,
@@ -116,7 +114,7 @@ const AUDIO_FILES: Record<string, any> = {
   'en_coffee_shop_40': require('../../assets/bundled-audio/en_coffee_shop/line_40.mp3'),
   'en_coffee_shop_41': require('../../assets/bundled-audio/en_coffee_shop/line_41.mp3'),
   'en_coffee_shop_42': require('../../assets/bundled-audio/en_coffee_shop/line_42.mp3'),
-  
+
   // English Restaurant (95 files)
   'en_restaurant_0': require('../../assets/bundled-audio/en_restaurant/line_0.mp3'),
   'en_restaurant_1': require('../../assets/bundled-audio/en_restaurant/line_1.mp3'),
@@ -220,11 +218,11 @@ async function getBundledAudioUriAsync(lessonKey: BundledLessonKey, lineIndex: n
   try {
     const key = `${lessonKey}_${lineIndex}`;
     const assetModule = AUDIO_FILES[key];
-    
+
     if (!assetModule) {
       return null;
     }
-    
+
     // For web, we need to resolve the asset to get the actual URL
     const asset = Asset.fromModule(assetModule);
     await asset.downloadAsync();
@@ -347,7 +345,7 @@ function createEnglishRestaurantLesson(): GeneratedDialogue {
     const text = lineData.text;
     const wordCount = text.split(' ').length;
     const duration = Math.max((wordCount / 2.5) * 1000, 2000);
-    
+
     return {
       id: `line_${index}`,
       speakerId: lineData.speaker as 1 | 2,
@@ -360,17 +358,17 @@ function createEnglishRestaurantLesson(): GeneratedDialogue {
       duration
     };
   });
-  
+
   // Calculate timing
   let currentTime = 0;
   const pauseBetweenLines = 500;
-  
+
   lines.forEach(line => {
     line.startTime = currentTime;
     line.endTime = currentTime + line.duration;
     currentTime += line.duration + pauseBetweenLines;
   });
-  
+
   return {
     config: {
       language: 'en',

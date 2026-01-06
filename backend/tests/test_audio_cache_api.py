@@ -5,9 +5,25 @@ Tests endpoints that are actively used in the current stable system
 
 import pytest
 from fastapi.testclient import TestClient
+from pymongo import MongoClient
+from pymongo.errors import ServerSelectionTimeoutError
 from server import app
 
 client = TestClient(app)
+
+def mongodb_available():
+    """Check if MongoDB is available."""
+    try:
+        mongo = MongoClient("localhost:27017", serverSelectionTimeoutMS=1000)
+        mongo.server_info()
+        return True
+    except ServerSelectionTimeoutError:
+        return False
+
+requires_mongodb = pytest.mark.skipif(
+    not mongodb_available(),
+    reason="MongoDB not available"
+)
 
 
 class TestCoreEndpoints:
@@ -19,6 +35,7 @@ class TestCoreEndpoints:
         assert response.status_code == 200
         assert response.json() == {"status": "healthy"}
     
+    @requires_mongodb
     def test_cache_stats_endpoint(self):
         """Cache stats endpoint should return valid data"""
         response = client.get("/api/audio/cache/stats")
