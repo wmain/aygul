@@ -1169,11 +1169,11 @@ export default function PlaybackScreen() {
 
     if (line.audioUri) {
       try {
-        let audioSource = line.audioUri;
+        let audioSource: any = line.audioUri;
         
         // If it's an object with uri property, extract it
         if (typeof audioSource === 'object' && audioSource !== null && 'uri' in audioSource) {
-          audioSource = audioSource.uri;
+          audioSource = (audioSource as any).uri;
         }
         
         // Replace the audio source
