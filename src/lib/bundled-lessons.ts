@@ -12,6 +12,10 @@
 
 import type { GeneratedDialogue, DialogueLine, Language, Location } from './types';
 import { Asset } from 'expo-asset';
+<<<<<<< progress-2
+import { EN_RESTAURANT_LINES } from './bundled-lesson-data-en-restaurant';
+=======
+>>>>>>> main
 
 // Key format: `${language}_${location}`
 export type BundledLessonKey =
@@ -112,6 +116,103 @@ const AUDIO_FILES: Record<string, any> = {
   'en_coffee_shop_40': require('../../assets/bundled-audio/en_coffee_shop/line_40.mp3'),
   'en_coffee_shop_41': require('../../assets/bundled-audio/en_coffee_shop/line_41.mp3'),
   'en_coffee_shop_42': require('../../assets/bundled-audio/en_coffee_shop/line_42.mp3'),
+  
+  // English Restaurant (95 files)
+  'en_restaurant_0': require('../../assets/bundled-audio/en_restaurant/line_0.mp3'),
+  'en_restaurant_1': require('../../assets/bundled-audio/en_restaurant/line_1.mp3'),
+  'en_restaurant_2': require('../../assets/bundled-audio/en_restaurant/line_2.mp3'),
+  'en_restaurant_3': require('../../assets/bundled-audio/en_restaurant/line_3.mp3'),
+  'en_restaurant_4': require('../../assets/bundled-audio/en_restaurant/line_4.mp3'),
+  'en_restaurant_5': require('../../assets/bundled-audio/en_restaurant/line_5.mp3'),
+  'en_restaurant_6': require('../../assets/bundled-audio/en_restaurant/line_6.mp3'),
+  'en_restaurant_7': require('../../assets/bundled-audio/en_restaurant/line_7.mp3'),
+  'en_restaurant_8': require('../../assets/bundled-audio/en_restaurant/line_8.mp3'),
+  'en_restaurant_9': require('../../assets/bundled-audio/en_restaurant/line_9.mp3'),
+  'en_restaurant_10': require('../../assets/bundled-audio/en_restaurant/line_10.mp3'),
+  'en_restaurant_11': require('../../assets/bundled-audio/en_restaurant/line_11.mp3'),
+  'en_restaurant_12': require('../../assets/bundled-audio/en_restaurant/line_12.mp3'),
+  'en_restaurant_13': require('../../assets/bundled-audio/en_restaurant/line_13.mp3'),
+  'en_restaurant_14': require('../../assets/bundled-audio/en_restaurant/line_14.mp3'),
+  'en_restaurant_15': require('../../assets/bundled-audio/en_restaurant/line_15.mp3'),
+  'en_restaurant_16': require('../../assets/bundled-audio/en_restaurant/line_16.mp3'),
+  'en_restaurant_17': require('../../assets/bundled-audio/en_restaurant/line_17.mp3'),
+  'en_restaurant_18': require('../../assets/bundled-audio/en_restaurant/line_18.mp3'),
+  'en_restaurant_19': require('../../assets/bundled-audio/en_restaurant/line_19.mp3'),
+  'en_restaurant_20': require('../../assets/bundled-audio/en_restaurant/line_20.mp3'),
+  'en_restaurant_21': require('../../assets/bundled-audio/en_restaurant/line_21.mp3'),
+  'en_restaurant_22': require('../../assets/bundled-audio/en_restaurant/line_22.mp3'),
+  'en_restaurant_23': require('../../assets/bundled-audio/en_restaurant/line_23.mp3'),
+  'en_restaurant_24': require('../../assets/bundled-audio/en_restaurant/line_24.mp3'),
+  'en_restaurant_25': require('../../assets/bundled-audio/en_restaurant/line_25.mp3'),
+  'en_restaurant_26': require('../../assets/bundled-audio/en_restaurant/line_26.mp3'),
+  'en_restaurant_27': require('../../assets/bundled-audio/en_restaurant/line_27.mp3'),
+  'en_restaurant_28': require('../../assets/bundled-audio/en_restaurant/line_28.mp3'),
+  'en_restaurant_29': require('../../assets/bundled-audio/en_restaurant/line_29.mp3'),
+  'en_restaurant_30': require('../../assets/bundled-audio/en_restaurant/line_30.mp3'),
+  'en_restaurant_31': require('../../assets/bundled-audio/en_restaurant/line_31.mp3'),
+  'en_restaurant_32': require('../../assets/bundled-audio/en_restaurant/line_32.mp3'),
+  'en_restaurant_33': require('../../assets/bundled-audio/en_restaurant/line_33.mp3'),
+  'en_restaurant_34': require('../../assets/bundled-audio/en_restaurant/line_34.mp3'),
+  'en_restaurant_35': require('../../assets/bundled-audio/en_restaurant/line_35.mp3'),
+  'en_restaurant_36': require('../../assets/bundled-audio/en_restaurant/line_36.mp3'),
+  'en_restaurant_37': require('../../assets/bundled-audio/en_restaurant/line_37.mp3'),
+  'en_restaurant_38': require('../../assets/bundled-audio/en_restaurant/line_38.mp3'),
+  'en_restaurant_39': require('../../assets/bundled-audio/en_restaurant/line_39.mp3'),
+  'en_restaurant_40': require('../../assets/bundled-audio/en_restaurant/line_40.mp3'),
+  'en_restaurant_41': require('../../assets/bundled-audio/en_restaurant/line_41.mp3'),
+  'en_restaurant_42': require('../../assets/bundled-audio/en_restaurant/line_42.mp3'),
+  'en_restaurant_43': require('../../assets/bundled-audio/en_restaurant/line_43.mp3'),
+  'en_restaurant_44': require('../../assets/bundled-audio/en_restaurant/line_44.mp3'),
+  'en_restaurant_45': require('../../assets/bundled-audio/en_restaurant/line_45.mp3'),
+  'en_restaurant_46': require('../../assets/bundled-audio/en_restaurant/line_46.mp3'),
+  'en_restaurant_47': require('../../assets/bundled-audio/en_restaurant/line_47.mp3'),
+  'en_restaurant_48': require('../../assets/bundled-audio/en_restaurant/line_48.mp3'),
+  'en_restaurant_49': require('../../assets/bundled-audio/en_restaurant/line_49.mp3'),
+  'en_restaurant_50': require('../../assets/bundled-audio/en_restaurant/line_50.mp3'),
+  'en_restaurant_51': require('../../assets/bundled-audio/en_restaurant/line_51.mp3'),
+  'en_restaurant_52': require('../../assets/bundled-audio/en_restaurant/line_52.mp3'),
+  'en_restaurant_53': require('../../assets/bundled-audio/en_restaurant/line_53.mp3'),
+  'en_restaurant_54': require('../../assets/bundled-audio/en_restaurant/line_54.mp3'),
+  'en_restaurant_55': require('../../assets/bundled-audio/en_restaurant/line_55.mp3'),
+  'en_restaurant_56': require('../../assets/bundled-audio/en_restaurant/line_56.mp3'),
+  'en_restaurant_57': require('../../assets/bundled-audio/en_restaurant/line_57.mp3'),
+  'en_restaurant_58': require('../../assets/bundled-audio/en_restaurant/line_58.mp3'),
+  'en_restaurant_59': require('../../assets/bundled-audio/en_restaurant/line_59.mp3'),
+  'en_restaurant_60': require('../../assets/bundled-audio/en_restaurant/line_60.mp3'),
+  'en_restaurant_61': require('../../assets/bundled-audio/en_restaurant/line_61.mp3'),
+  'en_restaurant_62': require('../../assets/bundled-audio/en_restaurant/line_62.mp3'),
+  'en_restaurant_63': require('../../assets/bundled-audio/en_restaurant/line_63.mp3'),
+  'en_restaurant_64': require('../../assets/bundled-audio/en_restaurant/line_64.mp3'),
+  'en_restaurant_65': require('../../assets/bundled-audio/en_restaurant/line_65.mp3'),
+  'en_restaurant_66': require('../../assets/bundled-audio/en_restaurant/line_66.mp3'),
+  'en_restaurant_67': require('../../assets/bundled-audio/en_restaurant/line_67.mp3'),
+  'en_restaurant_68': require('../../assets/bundled-audio/en_restaurant/line_68.mp3'),
+  'en_restaurant_69': require('../../assets/bundled-audio/en_restaurant/line_69.mp3'),
+  'en_restaurant_70': require('../../assets/bundled-audio/en_restaurant/line_70.mp3'),
+  'en_restaurant_71': require('../../assets/bundled-audio/en_restaurant/line_71.mp3'),
+  'en_restaurant_72': require('../../assets/bundled-audio/en_restaurant/line_72.mp3'),
+  'en_restaurant_73': require('../../assets/bundled-audio/en_restaurant/line_73.mp3'),
+  'en_restaurant_74': require('../../assets/bundled-audio/en_restaurant/line_74.mp3'),
+  'en_restaurant_75': require('../../assets/bundled-audio/en_restaurant/line_75.mp3'),
+  'en_restaurant_76': require('../../assets/bundled-audio/en_restaurant/line_76.mp3'),
+  'en_restaurant_77': require('../../assets/bundled-audio/en_restaurant/line_77.mp3'),
+  'en_restaurant_78': require('../../assets/bundled-audio/en_restaurant/line_78.mp3'),
+  'en_restaurant_79': require('../../assets/bundled-audio/en_restaurant/line_79.mp3'),
+  'en_restaurant_80': require('../../assets/bundled-audio/en_restaurant/line_80.mp3'),
+  'en_restaurant_81': require('../../assets/bundled-audio/en_restaurant/line_81.mp3'),
+  'en_restaurant_82': require('../../assets/bundled-audio/en_restaurant/line_82.mp3'),
+  'en_restaurant_83': require('../../assets/bundled-audio/en_restaurant/line_83.mp3'),
+  'en_restaurant_84': require('../../assets/bundled-audio/en_restaurant/line_84.mp3'),
+  'en_restaurant_85': require('../../assets/bundled-audio/en_restaurant/line_85.mp3'),
+  'en_restaurant_86': require('../../assets/bundled-audio/en_restaurant/line_86.mp3'),
+  'en_restaurant_87': require('../../assets/bundled-audio/en_restaurant/line_87.mp3'),
+  'en_restaurant_88': require('../../assets/bundled-audio/en_restaurant/line_88.mp3'),
+  'en_restaurant_89': require('../../assets/bundled-audio/en_restaurant/line_89.mp3'),
+  'en_restaurant_90': require('../../assets/bundled-audio/en_restaurant/line_90.mp3'),
+  'en_restaurant_91': require('../../assets/bundled-audio/en_restaurant/line_91.mp3'),
+  'en_restaurant_92': require('../../assets/bundled-audio/en_restaurant/line_92.mp3'),
+  'en_restaurant_93': require('../../assets/bundled-audio/en_restaurant/line_93.mp3'),
+  'en_restaurant_94': require('../../assets/bundled-audio/en_restaurant/line_94.mp3'),
 };
 
 // Helper functions - these use AUDIO_FILES so they must come after it
@@ -242,7 +343,62 @@ function createEnglishCoffeeShopLesson(): GeneratedDialogue {
 
 // Placeholder functions for other lessons - will be filled in when audio is generated
 function createEnglishRestaurantLesson(): GeneratedDialogue {
-  return createPlaceholderLesson('en', 'restaurant');
+  const lines: DialogueLine[] = EN_RESTAURANT_LINES.map((lineData, index) => {
+    const text = lineData.text;
+    const wordCount = text.split(' ').length;
+    const duration = Math.max((wordCount / 2.5) * 1000, 2000);
+    
+    return {
+      id: `line_${index}`,
+      speakerId: lineData.speaker as 1 | 2,
+      text: lineData.text,
+      spokenText: lineData.text,
+      segmentType: lineData.segment,
+      audioUri: getBundledAudioUri('en_restaurant', index),
+      startTime: 0, // Will be calculated below
+      endTime: 0,
+      duration
+    };
+  });
+  
+  // Calculate timing
+  let currentTime = 0;
+  const pauseBetweenLines = 500;
+  
+  lines.forEach(line => {
+    line.startTime = currentTime;
+    line.endTime = currentTime + line.duration;
+    currentTime += line.duration + pauseBetweenLines;
+  });
+  
+  return {
+    config: {
+      language: 'en',
+      location: 'restaurant',
+      situation: 'Ordering food at a restaurant',
+      difficulty: 'intermediate',
+      format: 'classroom_style',
+      lessonSegments: [
+        { id: 'seg_0', type: 'welcome' },
+        { id: 'seg_1', type: 'vocabulary' },
+        { id: 'seg_2', type: 'slow_dialogue' },
+        { id: 'seg_3', type: 'breakdown' },
+        { id: 'seg_4', type: 'natural_speed' },
+        { id: 'seg_5', type: 'quiz' },
+        { id: 'seg_6', type: 'cultural_note' },
+      ],
+      speaker1: { name: 'Maria', role: 'Customer' },
+      speaker2: { name: 'Jordan', role: 'Server' },
+      quizConfig: {
+        vocabL2ToL1: true,
+        vocabL1ToL2: true,
+        phraseMeaning: true,
+        comprehension: true,
+      },
+    },
+    lines,
+    totalDuration: currentTime,
+  };
 }
 
 function createSpanishCoffeeShopLesson(): GeneratedDialogue {

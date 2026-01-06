@@ -1,0 +1,98 @@
+1|WELCOME|[friendly]|¡Bienvenidos al restaurante!  
+2|WELCOME|[friendly]|Hoy vamos a aprender español relacionado con el restaurante.  
+3|WELCOME|[enthusiastic]|Es importante saber cómo ordenar y disfrutar de la comida.  
+4|WELCOME|[inviting]|Así que, ¡empecemos!  
+5|WELCOME|[friendly]|Primero, hablemos sobre algunas frases útiles.  
+6|WELCOME|[encouraging]|No se preocupen, lo aprenderán rápidamente.  
+7|WELCOME|[excited]|¿Listos para aprender? ¡Vamos!  
+8|WELCOME|[supportive]|Recuerden, practicar es la clave.  
+
+9|VOCAB|[informative]|Mesa - Table  
+10|VOCAB|[informative]|Silla - Chair  
+11|VOCAB|[informative]|Menú - Menu  
+12|VOCAB|[informative]|Camarero - Waiter  
+13|VOCAB|[informative]|Comida - Food  
+14|VOCAB|[informative]|Bebida - Drink  
+15|VOCAB|[informative]|Cuenta - Bill  
+16|VOCAB|[informative]|Reservación - Reservation  
+17|VOCAB|[informative]|Plato - Dish  
+18|VOCAB|[informative]|Postre - Dessert  
+19|VOCAB|[informative]|Entrante - Appetizer  
+20|VOCAB|[informative]|Recomendación - Recommendation  
+21|VOCAB|[informative]|Especialidad - Specialty  
+22|VOCAB|[informative]|Aperitivo - Snack  
+23|VOCAB|[informative]|Vegetariano - Vegetarian  
+24|VOCAB|[informative]|Sin gluten - Gluten-free  
+
+25|SLOW|[calm]|Ahora, escuchemos lentamente algunas frases.  
+26|SLOW|[calm]|Me gustaría una mesa para dos, por favor.  
+27|SLOW|[calm]|¿Cuál es la especialidad del día?  
+28|SLOW|[calm]|¿Puede traerme el menú, por favor?  
+29|SLOW|[calm]|Quisiera ordenar el pollo asado.  
+30|SLOW|[calm]|¿Qué bebidas tienen?  
+31|SLOW|[calm]|La cuenta, por favor.  
+32|SLOW|[calm]|¿Aceptan tarjetas de crédito?  
+33|SLOW|[calm]|Todo estaba delicioso, gracias.  
+34|SLOW|[calm]|¿Puedo tener un poco más de pan?  
+35|SLOW|[calm]|Me gustaría probar el postre.  
+36|SLOW|[calm]|¿Hay opciones vegetarianas en el menú?  
+37|SLOW|[calm]|No quiero nada picante, gracias.  
+38|SLOW|[calm]|¿Está incluido el servicio en la cuenta?  
+39|SLOW|[calm]|¡Todo estuvo perfecto!  
+40|SLOW|[calm]|Gracias por su atención.  
+
+41|BREAKDOWN|[analytical]|Ahora, desglosaremos algunas frases.  
+42|BREAKDOWN|[analytical]|"Me gustaría" significa "I would like".  
+43|BREAKDOWN|[analytical]|"Una mesa para dos" es "a table for two".  
+44|BREAKDOWN|[analytical]|"¿Cuál es la especialidad del día?" se traduce a "What is the special of the day?"  
+45|BREAKDOWN|[analytical]|"Quisiera" se usa como "I would like" en un contexto más formal.  
+46|BREAKDOWN|[analytical]|"La cuenta, por favor" se traduce directamente a "The bill, please".  
+47|BREAKDOWN|[analytical]|Es útil conocer la diferencia entre "camarero" y "camarera".  
+48|BREAKDOWN|[analytical]|"Aceptan tarjetas de crédito?" significa "Do you accept credit cards?"  
+49|BREAKDOWN|[analytical]|"Todo estaba delicioso" es una buena manera de elogiar la comida.  
+50|BREAKDOWN|[analytical]|"¿Hay opciones vegetarianas?" es una pregunta común.  
+51|BREAKDOWN|[analytical]|Recuerden que "sin gluten" significa "gluten-free".  
+52|BREAKDOWN|[analytical]|Es importante saber cómo pedir más pan o agua.  
+
+53|NATURAL|[casual]|Ahora, escuchemos cómo suena todo en una conversación natural.  
+54|NATURAL|[casual]|Camarero: ¡Hola! Bienvenidos al restaurante.  
+55|NATURAL|[casual]|Cliente: ¡Hola! Me gustaría una mesa para dos, por favor.  
+56|NATURAL|[casual]|Camarero: Claro, aquí tienen su mesa.  
+57|NATURAL|[casual]|Cliente: Gracias. ¿Puedo ver el menú?  
+58|NATURAL|[casual]|Camarero: Por supuesto, aquí está.  
+59|NATURAL|[casual]|Cliente: ¿Cuál es la especialidad del día?  
+60|NATURAL|[casual]|Camarero: Hoy tenemos paella.  
+61|NATURAL|[casual]|Cliente: Perfecto, quisiera ordenar eso.  
+62|NATURAL|[casual]|Camarero: ¿Y para beber?  
+63|NATURAL|[casual]|Cliente: Un agua con gas, gracias.  
+64|NATURAL|[casual]|Camarero: Muy bien, en un momento regreso.  
+65|NATURAL|[casual]|Cliente: Todo estuvo delicioso, gracias.  
+66|NATURAL|[casual]|Camarero: Me alegra que lo haya disfrutado.  
+67|NATURAL|[casual]|Cliente: ¿La cuenta, por favor?  
+68|NATURAL|[casual]|Camarero: Aquí la tiene.  
+69|NATURAL|[casual]|Cliente: ¿Aceptan tarjetas de crédito?  
+70|NATURAL|[casual]|Camarero: Sí, aceptamos.  
+
+71|QUIZ|[playful]|Ahora, un pequeño quiz para practicar.  
+72|QUIZ|[playful]|¿Cómo se dice "menu" en español?  
+73|QUIZ|[playful]|¿Qué significa "camarero"?  
+74|QUIZ|[playful]|¿Cómo pedirías una mesa para cuatro?  
+75|QUIZ|[playful]|¿Cómo dirías "the bill, please"?  
+76|QUIZ|[playful]|¿Qué preguntarías si quieres algo sin picante?  
+77|QUIZ|[playful]|¿Cuál es la traducción de "I would like"?  
+78|QUIZ|[playful]|¿Cómo se dice "dessert"?  
+79|QUIZ|[playful]|¿Qué puedes preguntar sobre opciones vegetarianas?  
+80|QUIZ|[playful]|¿Cómo dirías "thank you for your attention"?  
+81|QUIZ|[playful]|¿Qué significa "especialidad"?  
+82|QUIZ|[playful]|¿Cómo pedirías más pan?  
+83|QUIZ|[playful]|¿Qué dirías si todo estuvo delicioso?  
+
+84|CULTURAL|[educational]|Finalmente, hablemos sobre la cultura de los restaurantes.  
+85|CULTURAL|[educational]|En España, es común compartir platos.  
+86|CULTURAL|[educational]|Las tapas son una tradición muy popular.  
+87|CULTURAL|[educational]|La cena suele servirse más tarde, alrededor de las 9 p.m.  
+88|CULTURAL|[educational]|Es habitual que se tomen su tiempo para disfrutar de la comida.  
+89|CULTURAL|[educational]|Las propinas son opcionales, pero apreciadas.  
+90|CULTURAL|[educational]|Recuerden saludar y despedirse con un "hola" y "adiós".  
+91|CULTURAL|[educational]|¡Disfruten su experiencia gastronómica en español!  
+92|CULTURAL|[friendly]|Gracias por aprender con nosotros hoy.  

@@ -1,0 +1,97 @@
+1|WELCOME|[cheerful]|¡Bienvenidos a nuestra lección sobre la cafetería!
+2|WELCOME|[cheerful]|Hoy aprenderemos vocabulario y frases útiles para un café.
+3|WELCOME|[enthusiastic]|¿Listos para sumergirse en el mundo del café?
+4|WELCOME|[excited]|¡Perfecto! Comencemos con algunas palabras clave.
+5|WELCOME|[friendly]|Recuerden, no duden en repetir después de mí.
+6|WELCOME|[encouraging]|Esto será muy divertido y útil para sus conversaciones.
+7|WELCOME|[warm]|Así que, ¡empecemos nuestra aventura cafetera!
+8|WELCOME|[inviting]|¡Vamos a disfrutar de un buen café virtual juntos!
+
+9|VOCAB|[informative]|Café - Coffee
+10|VOCAB|[informative]|Taza - Cup
+11|VOCAB|[informative]|Azúcar - Sugar
+12|VOCAB|[informative]|Leche - Milk
+13|VOCAB|[informative]|Espresso - Espresso
+14|VOCAB|[informative]|Cappuccino - Cappuccino
+15|VOCAB|[informative]|Té - Tea
+16|VOCAB|[informative]|Pastel - Cake
+17|VOCAB|[informative]|Galleta - Cookie
+18|VOCAB|[informative]|Menú - Menu
+19|VOCAB|[informative]|Cuenta - Bill
+20|VOCAB|[informative]|Ordenar - To order
+21|VOCAB|[informative]|Barista - Barista
+22|VOCAB|[informative]|Sabor - Flavor
+23|VOCAB|[informative]|Caliente - Hot
+24|VOCAB|[informative]|Frío - Cold
+
+25|SLOW|[calm]|Ahora, vamos a practicar estas palabras lentamente.
+26|SLOW|[calm]|Café... (pausa) Café.
+27|SLOW|[calm]|Taza... (pausa) Taza.
+28|SLOW|[calm]|Azúcar... (pausa) Azúcar.
+29|SLOW|[calm]|Leche... (pausa) Leche.
+30|SLOW|[calm]|Espresso... (pausa) Espresso.
+31|SLOW|[calm]|Cappuccino... (pausa) Cappuccino.
+32|SLOW|[calm]|Té... (pausa) Té.
+33|SLOW|[calm]|Pastel... (pausa) Pastel.
+34|SLOW|[calm]|Galleta... (pausa) Galleta.
+35|SLOW|[calm]|Menú... (pausa) Menú.
+36|SLOW|[calm]|Cuenta... (pausa) Cuenta.
+37|SLOW|[calm]|Ordenar... (pausa) Ordenar.
+38|SLOW|[calm]|Barista... (pausa) Barista.
+39|SLOW|[calm]|Sabor... (pausa) Sabor.
+40|SLOW|[calm]|Caliente... (pausa) Caliente.
+41|SLOW|[calm]|Frío... (pausa) Frío.
+
+42|BREAKDOWN|[analytical]|Ahora desglosaremos algunas frases clave.
+43|BREAKDOWN|[analytical]|"Quisiera un café, por favor." significa "I would like a coffee, please."
+44|BREAKDOWN|[analytical]|"¿Cuánto cuesta?" significa "How much does it cost?"
+45|BREAKDOWN|[analytical]|"¿Puedo ver el menú?" significa "Can I see the menu?"
+46|BREAKDOWN|[analytical]|"Me gustaría ordenar un cappuccino." significa "I would like to order a cappuccino."
+47|BREAKDOWN|[analytical]|"¿Tienen pasteles?" significa "Do you have cakes?"
+48|BREAKDOWN|[analytical]|"La cuenta, por favor." significa "The bill, please."
+49|BREAKDOWN|[analytical]|"¿Tienen opciones sin lactosa?" significa "Do you have lactose-free options?"
+50|BREAKDOWN|[analytical]|"¿Qué sabores tienen?" significa "What flavors do you have?"
+51|BREAKDOWN|[analytical]|"Esto está delicioso." significa "This is delicious."
+52|BREAKDOWN|[analytical]|"Quiero mi café caliente." significa "I want my coffee hot."
+53|BREAKDOWN|[analytical]|"Preferiría un té frío." significa "I would prefer a cold tea."
+54|BREAKDOWN|[analytical]|"¿Me traes azúcar, por favor?" significa "Can you bring me sugar, please?"
+
+55|NATURAL|[friendly]|Ahora, hablemos de cómo usar esas frases naturalmente.
+56|NATURAL|[friendly]|En un café, podrías empezar con un saludo: "¡Hola!"
+57|NATURAL|[friendly]|Luego, puedes preguntar: "¿Puedo ver el menú?"
+58|NATURAL|[friendly]|Después de mirar, puedes decir: "Me gustaría ordenar un café."
+59|NATURAL|[friendly]|Si quieres algo específico, puedes agregar: "Sin azúcar, por favor."
+60|NATURAL|[friendly]|Cuando termines, puedes pedir: "La cuenta, por favor."
+61|NATURAL|[friendly]|Recuerda siempre ser amable con el barista.
+62|NATURAL|[friendly]|Puedes decir: "Gracias, esto está delicioso."
+63|NATURAL|[friendly]|Si te gusta el lugar, puedes comentar: "Volveré aquí."
+64|NATURAL|[friendly]|No dudes en preguntar sobre recomendaciones.
+65|NATURAL|[friendly]|A veces, los baristas tienen sus favoritos.
+66|NATURAL|[friendly]|Prueba a preguntar: "¿Cuál es su café más popular?"
+67|NATURAL|[friendly]|Disfruta del ambiente mientras esperas tu orden.
+68|NATURAL|[friendly]|Recuerda que un buen café puede ser una gran experiencia.
+69|NATURAL|[friendly]|¡Diviértete hablando con los demás clientes también!
+70|NATURAL|[friendly]|La cultura del café es social y llena de oportunidades para conectar.
+
+71|QUIZ|[playful]|Ahora, ¡es hora de un pequeño cuestionario!
+72|QUIZ|[playful]|¿Cómo se dice "coffee" en español?
+73|QUIZ|[playful]|¿Qué significa "La cuenta, por favor"?
+74|QUIZ|[playful]|¿Cómo pedirías un cappuccino?
+75|QUIZ|[playful]|¿Qué palabra usarías para "cookie"?
+76|QUIZ|[playful]|¿Cómo preguntarías por el menú?
+77|QUIZ|[playful]|¿Qué frase usarías para expresar que algo es delicioso?
+78|QUIZ|[playful]|¿Cómo dirías que prefieres tu café frío?
+79|QUIZ|[playful]|¿Qué preguntarías si quieres saber el precio?
+80|QUIZ|[playful]|¿Cómo dirías que quieres algo sin azúcar?
+81|QUIZ|[playful]|¿Cómo podrías agradecer al barista?
+82|QUIZ|[playful]|¿Qué dirías si quieres volver a un café?
+83|QUIZ|[playful]|¿Cómo pedirías que te traigan azúcar?
+
+84|CULTURAL|[informative]|Hablemos de la cultura del café en los países hispanohablantes.
+85|CULTURAL|[informative]|En muchos países, el café es una bebida social.
+86|CULTURAL|[informative]|Las cafeterías son lugares de encuentro y conversación.
+87|CULTURAL|[informative]|En España, el café con leche es muy popular en el desayuno.
+88|CULTURAL|[informative]|En Colombia, el café es una parte importante de la cultura y la economía.
+89|CULTURAL|[informative]|En México, el café se disfruta a menudo con un poco de canela.
+90|CULTURAL|[informative]|Recuerda, cada país tiene su propio estilo de servir el café.
+91|CULTURAL|[informative]|¡Así que explora y disfruta de la rica cultura cafetera!

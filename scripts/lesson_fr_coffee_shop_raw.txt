@@ -1,0 +1,92 @@
+1|WELCOME|[cheerful]|Bienvenue au cours de français sur le thème du café !
+2|WELCOME|[cheerful]|Aujourd'hui, nous allons explorer le vocabulaire du café.
+3|WELCOME|[cheerful]|Le café est une boisson populaire en France.
+4|WELCOME|[cheerful]|Il existe de nombreuses façons de le déguster.
+5|WELCOME|[cheerful]|Prêt à commencer ? Allons-y !
+6|WELCOME|[cheerful]|N'oubliez pas d'apporter votre enthousiasme !
+7|WELCOME|[cheerful]|C'est une leçon délicieuse à savourer.
+8|WELCOME|[cheerful]|Commençons notre voyage au café !
+
+9|VOCAB|[excited]|Café - coffee
+10|VOCAB|[excited]|Thé - tea
+11|VOCAB|[excited]|Croissant - croissant
+12|VOCAB|[excited]|Tasse - cup
+13|VOCAB|[excited]|Lait - milk
+14|VOCAB|[excited]|Sucre - sugar
+15|VOCAB|[excited]|Espresso - espresso
+16|VOCAB|[excited]|Latte - latte
+17|VOCAB|[excited]|Cappuccino - cappuccino
+18|VOCAB|[excited]|Pain au chocolat - chocolate croissant
+19|VOCAB|[excited]|Siroter - to sip
+20|VOCAB|[excited]|Café au lait - coffee with milk
+21|VOCAB|[excited]|Bistro - bistro
+22|VOCAB|[excited]|Serveur - waiter
+23|VOCAB|[excited]|Addition - bill
+
+24|SLOW|[calm]|Écoutons les mots lentement.
+25|SLOW|[calm]|Café... (pause) café.
+26|SLOW|[calm]|Thé... (pause) thé.
+27|SLOW|[calm]|Croissant... (pause) croissant.
+28|SLOW|[calm]|Tasse... (pause) tasse.
+29|SLOW|[calm]|Lait... (pause) lait.
+30|SLOW|[calm]|Sucre... (pause) sucre.
+31|SLOW|[calm]|Espresso... (pause) espresso.
+32|SLOW|[calm]|Latte... (pause) latte.
+33|SLOW|[calm]|Cappuccino... (pause) cappuccino.
+34|SLOW|[calm]|Pain au chocolat... (pause) pain au chocolat.
+35|SLOW|[calm]|Siroter... (pause) siroter.
+36|SLOW|[calm]|Café au lait... (pause) café au lait.
+37|SLOW|[calm]|Bistro... (pause) bistro.
+38|SLOW|[calm]|Serveur... (pause) serveur.
+39|SLOW|[calm]|Addition... (pause) addition.
+
+40|BREAKDOWN|[thoughtful]|Analysons les mots un à un.
+41|BREAKDOWN|[thoughtful]|Café, c'est la boisson que nous aimons tant.
+42|BREAKDOWN|[thoughtful]|Thé, une alternative populaire.
+43|BREAKDOWN|[thoughtful]|Croissant, souvent dégusté avec du café.
+44|BREAKDOWN|[thoughtful]|Tasse, ce qui contient notre boisson.
+45|BREAKDOWN|[thoughtful]|Lait, souvent ajouté au café.
+46|BREAKDOWN|[thoughtful]|Sucre, pour ceux qui aiment leur café sucré.
+47|BREAKDOWN|[thoughtful]|Espresso, un café fort et concentré.
+48|BREAKDOWN|[thoughtful]|Latte, un café doux avec du lait chaud.
+49|BREAKDOWN|[thoughtful]|Cappuccino, un mélange parfait de café et mousse.
+50|BREAKDOWN|[thoughtful]|Pain au chocolat, une douce gourmandise.
+51|BREAKDOWN|[thoughtful]|Siroter, c'est l'art de savourer lentement.
+
+52|NATURAL|[friendly]|En France, le café est souvent bu dans un café.
+53|NATURAL|[friendly]|Les gens aiment se retrouver autour d'un café.
+54|NATURAL|[friendly]|Il est courant de commander un café au bar.
+55|NATURAL|[friendly]|Les Français prennent souvent leur café le matin.
+56|NATURAL|[friendly]|Un café noir est un choix classique.
+57|NATURAL|[friendly]|Café au lait est idéal pour ceux qui aiment le lait.
+58|NATURAL|[friendly]|Les pâtisseries accompagnent souvent le café.
+59|NATURAL|[friendly]|Les terrasses sont parfaites pour déguster un café.
+60|NATURAL|[friendly]|Il y a même des cafés qui proposent des cafés spéciaux.
+61|NATURAL|[friendly]|Les cafés sont des lieux de rencontres et de discussions.
+62|NATURAL|[friendly]|Un bon café peut vraiment rehausser votre humeur.
+63|NATURAL|[friendly]|N'hésitez pas à essayer différents types de café.
+64|NATURAL|[friendly]|Siroter votre café est un vrai plaisir.
+65|NATURAL|[friendly]|Profitez de chaque gorgée pour apprécier les saveurs.
+66|NATURAL|[friendly]|Café et culture vont de pair en France.
+67|NATURAL|[friendly]|Le café est un symbole de convivialité.
+
+68|QUIZ|[curious]|Quel mot signifie "coffee" en français ?
+69|QUIZ|[curious]|Que signifie "cappuccino" ?
+70|QUIZ|[curious]|Comment dit-on "cup" en français ?
+71|QUIZ|[curious]|Quel est le mot pour "waiter" ?
+72|QUIZ|[curious]|Que déguste-t-on avec un café traditionnel ?
+73|QUIZ|[curious]|C'est quoi un "café au lait" ?
+74|QUIZ|[curious]|Quel type de café est très fort ?
+75|QUIZ|[curious]|Quel est l'équivalent de "bistro" en français ?
+76|QUIZ|[curious]|Comment appelle-t-on la note à payer au café ?
+77|QUIZ|[curious]|Quel mot signifie "sugar" ?
+78|QUIZ|[curious]|Qu'est-ce qu'un "pain au chocolat" ?
+
+79|CULTURAL|[informative]|Le café fait partie intégrante de la culture française.
+80|CULTURAL|[informative]|Il est souvent associé à des moments de pause.
+81|CULTURAL|[informative]|Les cafés parisiens sont célèbres dans le monde entier.
+82|CULTURAL|[informative]|Les Français passent du temps à discuter autour d'un café.
+83|CULTURAL|[informative]|Il existe des rituels spécifiques autour de la consommation de café.
+84|CULTURAL|[informative]|Les cafés sont des lieux d'inspiration pour de nombreux artistes.
+85|CULTURAL|[informative]|Les Français aiment prendre leur temps pour savourer leur café.
+86|CULTURAL|[informative]|Enfin, le café est un symbole de convivialité et d’échange.
