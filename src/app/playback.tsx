@@ -1059,62 +1059,17 @@ export default function PlaybackScreen() {
     });
   }, []);
 
-  // Monitor audio playback status and handle completion + line advancement
+  // Monitor audio playback status and handle completion
   useEffect(() => {
-    if (!dialogue || !audioStatus) return;
-    
-    // For section-based audio: Update current line based on playback time
-    if (audioStatus.playing && audioStatus.currentTime > 0) {
-      // Find which line should be highlighted based on current audio time
-      const currentLine = dialogue.lines[currentLineIndex];
-      
-      if (currentLine && currentLine.sectionAudioStart !== undefined) {
-        // Section-based audio: check if we've moved past this line's end time
-        const lineEndTime = currentLine.sectionAudioStart + (currentLine.duration / 1000);
-        
-        if (audioStatus.currentTime >= lineEndTime) {
-          // Move to next line
-          const nextIndex = currentLineIndex + 1;
-          if (nextIndex < dialogue.lines.length) {
-            const nextLine = dialogue.lines[nextIndex];
-            
-            // Only advance if next line is in same section (same audio file)
-            if (nextLine.audioUri === currentLine.audioUri) {
-              setCurrentLineIndex(nextIndex);
-              setCurrentAudioIndex(nextIndex);
-              currentAudioIndexRef.current = nextIndex;
-              // Don't call playLineAudio - let the audio continue naturally
-            } else {
-              // Different section - will be handled by completion logic
-            }
-          }
-        }
-      }
-    }
-    
-    // Handle section completion
     if (audioStatus.playing === false && audioStatus.currentTime >= audioStatus.duration && audioStatus.duration > 0) {
-      // Section audio finished
+      // Playback just finished
       if (lastPlayedIndexRef.current === currentAudioIndex && isPlayingRef.current) {
-        // Find next section (next line with different audioUri)
-        const currentLine = dialogue.lines[currentAudioIndex];
-        let nextSectionIndex = currentAudioIndex + 1;
-        
-        // Find the start of the next section
-        while (nextSectionIndex < dialogue.lines.length) {
-          const line = dialogue.lines[nextSectionIndex];
-          if (line.audioUri !== currentLine?.audioUri) {
-            // Found next section
-            break;
-          }
-          nextSectionIndex++;
-        }
-        
-        if (nextSectionIndex < dialogue.lines.length) {
-          setCurrentAudioIndex(nextSectionIndex);
-          setCurrentLineIndex(nextSectionIndex);
+        // Manually trigger next line
+        const nextIndex = currentAudioIndexRef.current + 1;
+        if (nextIndex < (dialogue?.lines.length || 0)) {
+          setCurrentAudioIndex(nextIndex);
+          setCurrentLineIndex(nextIndex);
         } else {
-          // End of lesson
           setIsPlaying(false);
           setCurrentAudioIndex(-1);
         }
@@ -1125,20 +1080,12 @@ export default function PlaybackScreen() {
     if (audioStatus.duration > 0) {
       setAudioProgress(audioStatus.currentTime / audioStatus.duration);
     }
-  }, [audioStatus.playing, audioStatus.currentTime, audioStatus.duration, currentAudioIndex, currentLineIndex, dialogue]);
+  }, [audioStatus.playing, audioStatus.currentTime, audioStatus.duration, currentAudioIndex, dialogue]);
 
-  // Auto-play next line when currentAudioIndex changes (from playback completion)
-  // Only for line-based audio, not section-based
+  // Auto-play next line when currentAudioIndex changes
   useEffect(() => {
     if (currentAudioIndex >= 0 && isPlayingRef.current && lastPlayedIndexRef.current !== currentAudioIndex) {
-      const currentLine = dialogue?.lines[currentAudioIndex];
-      const prevLine = currentAudioIndex > 0 ? dialogue?.lines[currentAudioIndex - 1] : null;
-      
-      // Only auto-play if this is a new section (different audio file)
-      // For same section, audio continues playing naturally
-      if (!currentLine || !prevLine || currentLine.audioUri !== prevLine.audioUri) {
-        playLineAudio(currentAudioIndex);
-      }
+      playLineAudio(currentAudioIndex);
     }
   }, [currentAudioIndex, dialogue]);
 
@@ -1220,14 +1167,6 @@ export default function PlaybackScreen() {
     const line = dialogue.lines[index];
     if (!line) return;
 
-    console.log(`[Playback] Attempting to play line ${index}`, {
-      hasAudioUri: !!line.audioUri,
-      audioUriType: typeof line.audioUri,
-      audioUri: line.audioUri,
-      sectionAudioStart: line.sectionAudioStart,
-      segmentType: line.segmentType
-    });
-
     if (line.audioUri) {
       try {
         let audioSource = line.audioUri;
@@ -1237,38 +1176,19 @@ export default function PlaybackScreen() {
           audioSource = audioSource.uri;
         }
         
-        console.log(`[Playback] Audio source:`, audioSource);
+        // Replace the audio source
+        audioPlayer.replace(audioSource);
         
-        // Check if we need to change the audio file
-        // (different sections may have different audio files)
-        const prevLine = index > 0 ? dialogue.lines[index - 1] : null;
-        const needsNewAudio = !prevLine || prevLine.audioUri !== line.audioUri;
-        
-        console.log(`[Playback] Needs new audio: ${needsNewAudio}`);
-        
-        if (needsNewAudio) {
-          // Replace with new audio file
-          console.log(`[Playback] Replacing audio with:`, audioSource);
-          audioPlayer.replace(audioSource);
-          audioPlayer.playbackRate = playbackSpeedRef.current;
-        }
-        
-        // If this line has a sectionAudioStart time, seek to that position
-        if (line.sectionAudioStart !== undefined && needsNewAudio) {
-          // For section-based audio, seek to the start of this line within the section
-          console.log(`[Playback] Seeking to ${line.sectionAudioStart}s`);
-          audioPlayer.currentTime = line.sectionAudioStart;
-        }
+        // Set playback rate
+        audioPlayer.playbackRate = playbackSpeedRef.current;
         
         // Start playing
-        console.log(`[Playback] Calling play()`);
         audioPlayer.play();
         
         // Track which line we just started playing
         lastPlayedIndexRef.current = index;
-        console.log(`[Playback] Audio playback initiated for line ${index}`);
       } catch (error) {
-        console.error('[Playback] Error playing audio:', error);
+        console.error('Error playing audio:', error);
         setTimeout(() => {
           if (isPlayingRef.current) {
             playNextLine();
@@ -1276,7 +1196,6 @@ export default function PlaybackScreen() {
         }, line.duration || 2000);
       }
     } else {
-      console.log(`[Playback] No audio URI, using timeout for line ${index}`);
       setTimeout(() => {
         if (isPlayingRef.current) {
           playNextLine();

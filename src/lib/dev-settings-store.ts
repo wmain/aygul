@@ -32,8 +32,8 @@ interface DevSettingsState {
 
 const defaultSettings: DevSettings = {
   ttsProvider: 'elevenlabs',
-  appMode: 'development', // Development mode by default
-  audioSystem: 'section-based', // NEW: Use section-based by default
+  appMode: 'development',
+  audioSystem: 'line-based', // REVERT: Use line-based (working system)
 };
 
 export const useDevSettingsStore = create<DevSettingsState>()(
