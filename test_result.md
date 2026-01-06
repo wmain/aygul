@@ -213,11 +213,27 @@ January 6, 2025
 - **file**: "/app/src/lib/section-audio-service.ts"
 - **stuck_count**: 0
 - **priority**: "medium"
-- **needs_retesting**: true
+- **needs_retesting**: false
 - **status_history**:
   - **working**: "NA"
   - **agent**: "testing"
   - **comment**: "⚠ Cannot test character customization because API calls fail. Cache key generation logic exists and looks correct."
+  - **working**: "NA"
+  - **agent**: "testing"
+  - **comment**: "✅ Code review confirms cache key generation includes speaker names (line 63: ${lang}_${section}_${loc}_${spkA}_${spkB}). Logic is correct but cannot test due to upstream failure."
+
+### Task 8: Dialogue Generation API Call
+- **task**: "Frontend calls /api/generate-dialogue to generate lesson content"
+- **implemented**: true
+- **working**: false
+- **file**: "/app/src/lib/dialogue-service.ts"
+- **stuck_count**: 0
+- **priority**: "high"
+- **needs_retesting**: false
+- **status_history**:
+  - **working**: false
+  - **agent**: "testing"
+  - **comment**: "❌ CRITICAL: Dialogue generation fails with 501 error. Frontend uses relative URL '/api/generate-dialogue' (line 491) which calls frontend server (Python HTTP server on port 3000) instead of backend. Should use EXPO_PUBLIC_BACKEND_URL environment variable. Backend endpoint works correctly when called directly (verified with curl). This blocks all lesson generation and prevents testing of section audio system."
 
 ---
 
