@@ -1157,24 +1157,12 @@ export default function PlaybackScreen() {
 
     if (line.audioUri) {
       try {
-        console.log(`[Audio Debug] Playing line ${index}:`, {
-          audioUri: line.audioUri,
-          type: typeof line.audioUri,
-          lineId: line.id,
-        });
-        
-        // audioUri can be:
-        // - A string URL (for API-generated audio or resolved web assets)
-        // - A number (Expo asset ID for bundled audio on native)
         let audioSource = line.audioUri;
         
         // If it's an object with uri property, extract it
         if (typeof audioSource === 'object' && audioSource !== null && 'uri' in audioSource) {
           audioSource = audioSource.uri;
-          console.log('[Audio Debug] Extracted URI from object:', audioSource);
         }
-        
-        console.log('[Audio Debug] Calling audioPlayer.replace with:', audioSource);
         
         // Replace the audio source
         audioPlayer.replace(audioSource);
@@ -1188,7 +1176,7 @@ export default function PlaybackScreen() {
         // Track which line we just started playing
         lastPlayedIndexRef.current = index;
       } catch (error) {
-        console.error('[Audio Debug] Error playing audio:', error);
+        console.error('Error playing audio:', error);
         setTimeout(() => {
           if (isPlayingRef.current) {
             playNextLine();
@@ -1196,7 +1184,6 @@ export default function PlaybackScreen() {
         }, line.duration || 2000);
       }
     } else {
-      console.log(`[Audio Debug] No audioUri for line ${index}, using duration delay`);
       setTimeout(() => {
         if (isPlayingRef.current) {
           playNextLine();

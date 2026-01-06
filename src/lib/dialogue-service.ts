@@ -638,7 +638,6 @@ export async function generateConversation(
     const lessonKey = getBundledLessonKey(config.language, config.location);
     if (lessonKey) {
       onProgress?.(0.3, 'Loading bundled lesson...');
-      console.log(`[Dev Mode] Loading bundled lesson: ${lessonKey}`);
       
       try {
         const bundledLesson = await getBundledLessonAsync(lessonKey);
@@ -647,15 +646,12 @@ export async function generateConversation(
           return bundledLesson;
         }
       } catch (error) {
-        console.error('[Dev Mode] Failed to load bundled lesson:', error);
+        console.error('Failed to load bundled lesson:', error);
       }
     }
-    console.log(`[Dev Mode] No bundled lesson found for ${config.language}_${config.location}, falling back to API`);
   }
 
-  // Development mode still uses real API calls for audio, just with limited options
-  // The language/location restrictions are enforced in the UI (index.tsx)
-
+  // Fall back to API generation
   onProgress?.(0.1, 'Generating dialogue...');
 
   // Get the TTS provider from dev settings

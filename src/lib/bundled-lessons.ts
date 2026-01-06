@@ -43,25 +43,12 @@ export async function getBundledLessonAsync(key: BundledLessonKey): Promise<Gene
   const lesson = BUNDLED_LESSONS[key];
   if (!lesson) return null;
   
-  console.log(`[Bundled Lesson] Loading lesson ${key}, total lines: ${lesson.lines.length}`);
-  
   // Resolve all audio URIs to actual URLs for web
   const linesWithResolvedAudio = await Promise.all(
-    lesson.lines.map(async (line, idx) => {
+    lesson.lines.map(async (line) => {
       if (line.audioUri) {
-        // Extract the lesson key and line index from the line id
         const lineIndex = parseInt(line.id.split('_')[1]);
         const resolvedUri = await getBundledAudioUriAsync(key, lineIndex);
-        
-        if (idx === 0) {
-          console.log(`[Bundled Lesson] Sample audio resolution:`, {
-            lineId: line.id,
-            originalUri: line.audioUri,
-            resolvedUri,
-            type: typeof resolvedUri,
-          });
-        }
-        
         return {
           ...line,
           audioUri: resolvedUri || line.audioUri,
@@ -70,8 +57,6 @@ export async function getBundledLessonAsync(key: BundledLessonKey): Promise<Gene
       return line;
     })
   );
-  
-  console.log(`[Bundled Lesson] Resolved ${linesWithResolvedAudio.filter(l => l.audioUri).length} audio files`);
   
   return {
     ...lesson,
