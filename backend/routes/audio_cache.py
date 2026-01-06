@@ -7,11 +7,15 @@ Handles section-based audio caching with 3-tier architecture:
 """
 
 import os
+from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException, Response
 from fastapi.responses import FileResponse
 from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime
 from typing import Optional
+
+# Load environment variables
+load_dotenv()
 
 from models.audio_cache import (
     AudioCacheEntry,
