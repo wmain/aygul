@@ -1278,6 +1278,133 @@ export function generateInstantMockConversation(
     const dialogueLine: DialogueLine = {
       id: `mock_${index}`,
       speakerId: line.speakerId,
+
+
+/**
+ * Generate conversation with section-based audio caching
+ * This is the NEW implementation that uses section-level audio files
+ * 
+ * Uses 3-tier caching:
+ * 1. Device cache → 2. Server cache → 3. ElevenLabs API generation
+ */
+export async function generateConversationWithSections(
+  config: ConversationConfig,
+  onProgress?: (progress: number, status: string) => void
+): Promise<GeneratedDialogue> {
+  onProgress?.(0.05, 'Generating lesson structure...');
+  
+  // First, generate the dialogue text (same as before)
+  const parsedLines = await generateDialogueText(config);
+  
+  if (parsedLines.length === 0) {
+    throw new Error('No dialogue lines generated');
+  }
+  
+  onProgress?.(0.2, 'Organizing sections...');
+  
+  // Group lines by section
+  const dialogueLines: DialogueLine[] = [];
+  let currentTime = 0;
+  const pauseBetweenLines = 500;
+  
+  // Convert parsed lines to DialogueLine format first
+  const tempLines: DialogueLine[] = parsedLines.map((line, index) => {
+    const textForDuration = line.spokenText || line.text;
+    const wordCount = textForDuration.split(' ').length;
+    const duration = Math.max((wordCount / 2.5) * 1000, 2000);
+    
+    return {
+      id: `line_${index}`,
+      speakerId: line.speakerId,
+      text: line.text,
+      spokenText: line.spokenText,
+      emotion: line.emotion,
+      segmentType: line.segmentType,
+      audioUri: undefined, // Will be set per section
+      startTime: 0, // Will be recalculated
+      endTime: 0,
+      duration
+    };
+  });
+  
+  // Group by section
+  const sectionMap = groupLinesBySection(tempLines);
+  const sectionTypes = Array.from(sectionMap.keys());
+  
+  onProgress?.(0.3, `Loading ${sectionTypes.length} sections...`);
+  
+  // Process each section
+  let globalTime = 0;
+  
+  for (let i = 0; i < sectionTypes.length; i++) {
+    const sectionType = sectionTypes[i];
+    const sectionLines = sectionMap.get(sectionType) || [];
+    
+    if (sectionLines.length === 0) continue;
+    
+    const progress = 0.3 + (0.6 * (i / sectionTypes.length));
+    onProgress?.(progress, `Loading ${sectionType}...`);
+    
+    try {
+      // Get section audio (handles caching internally)
+      const sectionAudio = await getSectionAudio(
+        config.language,
+        sectionType,
+        config.location,
+        config.speaker1.name,
+        config.speaker2.name,
+        sectionLines,
+        (sectionProgress, status) => {
+          // Nested progress for this section
+          const overallProgress = progress + (0.6 / sectionTypes.length) * sectionProgress;
+          onProgress?.(overallProgress, `${sectionType}: ${status}`);
+        }
+      );
+      
+      // Update lines with section audio URI and recalculated timing
+      let sectionTime = 0;
+      
+      sectionLines.forEach((line, lineIndex) => {
+        // Use timestamps from server if available
+        const timestamp = sectionAudio.timestamps[lineIndex];
+        
+        if (timestamp) {
+          line.startTime = globalTime + (timestamp.start * 1000);
+          line.endTime = globalTime + (timestamp.end * 1000);
+          line.duration = (timestamp.end - timestamp.start) * 1000;
+        } else {
+          // Fallback: use estimated duration
+          line.startTime = globalTime + sectionTime;
+          line.endTime = globalTime + sectionTime + line.duration;
+        }
+        
+        // All lines in this section share the same audio file
+        line.audioUri = sectionAudio.audioUrl;
+        line.sectionAudioStart = timestamp ? timestamp.start : sectionTime / 1000;
+        
+        dialogueLines.push(line);
+        sectionTime += line.duration + pauseBetweenLines;
+      });
+      
+      // Move global time forward by actual section duration
+      globalTime += sectionAudio.duration || sectionTime;
+      
+    } catch (error) {
+      console.error(`Failed to load section ${sectionType}:`, error);
+      // Skip this section on error
+      continue;
+    }
+  }
+  
+  onProgress?.(1, 'Complete!');
+  
+  return {
+    config,
+    lines: dialogueLines,
+    totalDuration: globalTime
+  };
+}
+
       text: line.text,
       spokenText: line.spokenText,
       emotion: line.emotion,
