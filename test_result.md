@@ -138,9 +138,9 @@ January 6, 2025
 ### Task 2: Section-Based Audio Generation - Frontend Integration
 - **task**: "Frontend calls section audio API and handles 3-tier caching"
 - **implemented**: true
-- **working**: false
+- **working**: true
 - **file**: "/app/src/lib/section-audio-service.ts"
-- **stuck_count**: 2
+- **stuck_count**: 0
 - **priority**: "high"
 - **needs_retesting**: false
 - **status_history**:
@@ -150,6 +150,9 @@ January 6, 2025
   - **working**: false
   - **agent**: "testing"
   - **comment**: "❌ CRITICAL: Cannot test section audio system because lesson generation fails upstream. The /api/generate-dialogue endpoint call fails with 501 error because frontend uses relative URL '/api/generate-dialogue' instead of BACKEND_URL. Code review shows snake_case fix IS implemented (lines 209-210 in section-audio-service.ts) and Cache API fix IS implemented (lines 72-86), but cannot verify in practice due to dialogue generation failure. Backend logs show recent 422 errors still occurring from other sources."
+  - **working**: true
+  - **agent**: "testing"
+  - **comment**: "✅ VERIFIED: All fixes working correctly! Lesson generation completed successfully. Section-based audio system fully functional with all 7 sections (welcome, vocab, slow, breakdown, natural, quiz, cultural) generating and caching properly. Cache API working on web platform. No 501 or 422 errors detected. Console logs confirm: '[Audio System] Using section-based generation' and all sections showing 'Web cached' messages. Dialogue API using BACKEND_URL correctly."
 
 ### Task 3: Device Cache (expo-file-system)
 - **task**: "Device-level caching using expo-file-system"
