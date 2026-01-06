@@ -41,7 +41,7 @@ async def generate_dialogue(request: DialogueRequest):
     if not OPENAI_API_KEY:
         raise HTTPException(status_code=500, detail="OpenAI API key not configured")
     
-    url = "https://api.openai.com/v1/chat/completions"
+    url = "https://api.openai.com/v1/responses"
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {OPENAI_API_KEY}"
@@ -98,10 +98,7 @@ IMPORTANT: Output ONLY the pipe-delimited lines, no headers, no extra text."""
 
     payload = {
         "model": "gpt-4o-mini",
-        "messages": [
-            {"role": "system", "content": "You are a language learning content generator. Output only the requested format with no additional text."},
-            {"role": "user", "content": prompt}
-        ],
+        "input": prompt,
         "temperature": 0.7
     }
     
@@ -111,8 +108,15 @@ IMPORTANT: Output ONLY the pipe-delimited lines, no headers, no extra text."""
             response.raise_for_status()
             data = response.json()
             
-            # Extract text from ChatGPT response
-            text = data["choices"][0]["message"]["content"]
+            # Extract the text from the response
+            # OpenAI responses API structure: data.output[0].content[0].text
+            text = ""
+            if "output" in data and len(data["output"]) > 0:
+                output = data["output"][0]
+                if "content" in output and len(output["content"]) > 0:
+                    content = output["content"][0]
+                    if "text" in content:
+                        text = content["text"]
             
             # Return in the format the frontend expects
             return {
@@ -121,7 +125,7 @@ IMPORTANT: Output ONLY the pipe-delimited lines, no headers, no extra text."""
                         "text": text
                     }]
                 }],
-                "output_text": text
+                "output_text": text  # Fallback format
             }
         except httpx.HTTPError as e:
             raise HTTPException(status_code=500, detail=f"OpenAI API request failed: {str(e)}")
