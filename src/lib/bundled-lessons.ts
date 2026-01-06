@@ -12,7 +12,10 @@
 
 import type { GeneratedDialogue, DialogueLine, Language, Location } from './types';
 import { Asset } from 'expo-asset';
+<<<<<<< progress-2
 import { EN_RESTAURANT_LINES } from './bundled-lesson-data-en-restaurant';
+=======
+>>>>>>> main
 
 // Key format: `${language}_${location}`
 export type BundledLessonKey =
