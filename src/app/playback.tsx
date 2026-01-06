@@ -34,8 +34,9 @@ import {
 } from 'lucide-react-native';
 import { cn } from '@/lib/cn';
 import { useDialogueStore } from '@/lib/dialogue-store';
-import { generateConversation, generateMockConversation, generateInstantMockConversation } from '@/lib/dialogue-service';
+import { generateConversation, generateMockConversation, generateInstantMockConversation, generateConversationWithSections } from '@/lib/dialogue-service';
 import type { DialogueLine, GeneratedDialogue } from '@/lib/types';
+import { useDevSettingsStore } from '@/lib/dev-settings-store';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -1095,14 +1096,25 @@ export default function PlaybackScreen() {
 
     try {
       const hasOpenAI = !!process.env.EXPO_PUBLIC_VIBECODE_OPENAI_API_KEY;
+      const audioSystem = useDevSettingsStore.getState().settings.audioSystem;
 
       let result: GeneratedDialogue;
 
       if (hasOpenAI) {
-        result = await generateConversation(config, (progress, status) => {
-          setGenerationProgress(progress);
-          setGenerationStatus(status);
-        });
+        // Use section-based or line-based generation based on feature flag
+        if (audioSystem === 'section-based') {
+          console.log('[Audio System] Using section-based generation');
+          result = await generateConversationWithSections(config, (progress, status) => {
+            setGenerationProgress(progress);
+            setGenerationStatus(status);
+          });
+        } else {
+          console.log('[Audio System] Using line-based generation');
+          result = await generateConversation(config, (progress, status) => {
+            setGenerationProgress(progress);
+            setGenerationStatus(status);
+          });
+        }
       } else {
         console.log('Using mock dialogue (OpenAI API key not configured)');
         result = await generateMockConversation(config, (progress, status) => {
