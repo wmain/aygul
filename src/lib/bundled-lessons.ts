@@ -12,6 +12,7 @@
 
 import type { GeneratedDialogue, DialogueLine, Language, Location } from './types';
 import { Asset } from 'expo-asset';
+import { EN_RESTAURANT_LINES } from './bundled-lesson-data-en-restaurant';
 
 // Key format: `${language}_${location}`
 export type BundledLessonKey =
@@ -339,34 +340,32 @@ function createEnglishCoffeeShopLesson(): GeneratedDialogue {
 
 // Placeholder functions for other lessons - will be filled in when audio is generated
 function createEnglishRestaurantLesson(): GeneratedDialogue {
-  // Load the lesson data from the generated JSON
-  const lines: DialogueLine[] = EN_RESTAURANT_DATA.map((line, index) => ({
-    id: `line_${index}`,
-    speakerId: line.speakerId as 1 | 2,
-    text: line.text,
-    spokenText: line.spokenText,
-    emotion: line.emotion,
-    segmentType: line.segmentType,
-    audioUri: getBundledAudioUri('en_restaurant', index),
-    startTime: 0, // Will be calculated
-    endTime: 0,
-    duration: 0
-  }));
+  const lines: DialogueLine[] = EN_RESTAURANT_LINES.map((lineData, index) => {
+    const text = lineData.text;
+    const wordCount = text.split(' ').length;
+    const duration = Math.max((wordCount / 2.5) * 1000, 2000);
+    
+    return {
+      id: `line_${index}`,
+      speakerId: lineData.speaker as 1 | 2,
+      text: lineData.text,
+      spokenText: lineData.text,
+      segmentType: lineData.segment,
+      audioUri: getBundledAudioUri('en_restaurant', index),
+      startTime: 0, // Will be calculated below
+      endTime: 0,
+      duration
+    };
+  });
   
   // Calculate timing
   let currentTime = 0;
   const pauseBetweenLines = 500;
   
   lines.forEach(line => {
-    const text = line.spokenText || line.text;
-    const wordCount = text.split(' ').length;
-    const duration = Math.max((wordCount / 2.5) * 1000, 2000);
-    
     line.startTime = currentTime;
-    line.endTime = currentTime + duration;
-    line.duration = duration;
-    
-    currentTime += duration + pauseBetweenLines;
+    line.endTime = currentTime + line.duration;
+    currentTime += line.duration + pauseBetweenLines;
   });
   
   return {
