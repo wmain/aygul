@@ -339,38 +339,39 @@ January 6, 2025
 
 ## Issues Found
 
-### Critical Issues
+### ~~Critical Issues~~ - ALL RESOLVED ✅
 
-1. **Dialogue Generation API Call Failure (BLOCKING)**
-   - **Severity**: CRITICAL - Blocks all lesson generation and testing
-   - **Location**: Frontend `/app/src/lib/dialogue-service.ts` line 491
-   - **Issue**: Uses relative URL `/api/generate-dialogue` instead of `EXPO_PUBLIC_BACKEND_URL`
-   - **Impact**: Frontend calls `http://localhost:3000/api/generate-dialogue` (Python HTTP server) which returns 501 (Unsupported method). This prevents lesson generation entirely.
-   - **Evidence**: Console logs show "Failed to load resource: the server responded with a status of 501 (Unsupported method ('POST'))" and "Failed to generate dialogue"
+1. ~~**Dialogue Generation API Call Failure (BLOCKING)** - FIXED ✅~~
+   - **Severity**: ~~CRITICAL~~ RESOLVED
+   - **Location**: Frontend `/app/src/lib/dialogue-service.ts` line 492
+   - **Issue**: ~~Uses relative URL `/api/generate-dialogue` instead of `EXPO_PUBLIC_BACKEND_URL`~~
+   - **Impact**: ~~Frontend calls `http://localhost:3000/api/generate-dialogue` (Python HTTP server) which returns 501 (Unsupported method). This prevents lesson generation entirely.~~
+   - **Evidence**: ~~Console logs show "Failed to load resource: the server responded with a status of 501 (Unsupported method ('POST'))" and "Failed to generate dialogue"~~
    - **Backend Status**: Backend endpoint works correctly when called directly with curl
-   - **Fix Required**: Change line 491 from `fetch('/api/generate-dialogue', {` to `fetch('${BACKEND_URL}/api/generate-dialogue', {` where BACKEND_URL is from environment variable
+   - **Fix Status**: ✅ VERIFIED - Line 492 correctly uses `${BACKEND_URL}/api/generate-dialogue` where BACKEND_URL is from environment variable. No 501 errors in testing.
 
-2. **API Field Name Mismatch (422 Errors) - FIX IMPLEMENTED BUT UNVERIFIED**
-   - **Severity**: HIGH - Would block audio generation if dialogue generation worked
+2. ~~**API Field Name Mismatch (422 Errors)** - FIXED ✅~~
+   - **Severity**: ~~HIGH~~ RESOLVED
    - **Location**: Frontend `/app/src/lib/section-audio-service.ts` → Backend `/app/backend/models/audio_cache.py`
-   - **Status**: Code review shows fix IS implemented (lines 209-210 send snake_case), but cannot verify due to Issue #1
-   - **Backend Logs**: Still show some 422 errors from other sources (10.64.128.6, 10.64.128.8)
-   - **Evidence**: Backend logs show "POST /api/audio/section/generate HTTP/1.1" 422 Unprocessable Entity"
-   - **Recommendation**: Once Issue #1 is fixed, re-test to verify 422 errors are resolved
+   - **Status**: ✅ VERIFIED - Lines 209-210 correctly send snake_case (speaker_a, speaker_b). No 422 errors in testing.
+   - **Backend Logs**: ~~Still show some 422 errors from other sources (10.64.128.6, 10.64.128.8)~~ Current test session shows no 422 errors
+   - **Evidence**: ~~Backend logs show "POST /api/audio/section/generate HTTP/1.1" 422 Unprocessable Entity"~~
+   - **Fix Status**: ✅ VERIFIED - All API calls returning 200 OK. Section audio generation working correctly.
 
-3. **Device Cache Not Web-Compatible - FIX IMPLEMENTED BUT UNVERIFIED**
-   - **Severity**: MEDIUM - Tier 1 caching would be broken on web
+3. ~~**Device Cache Not Web-Compatible** - FIXED ✅~~
+   - **Severity**: ~~MEDIUM~~ RESOLVED
    - **Location**: `/app/src/lib/section-audio-service.ts`
-   - **Status**: Code review shows Cache API fix IS implemented (lines 72-86, 111-124), but cannot verify due to Issue #1
-   - **Evidence**: No expo-file-system errors in console logs during testing, suggesting fix is working
-   - **Recommendation**: Once Issue #1 is fixed, re-test to verify Cache API works correctly
+   - **Status**: ✅ VERIFIED - Cache API implementation working perfectly (lines 72-86, 111-124)
+   - **Evidence**: Console logs show successful caching for all 7 sections: "Web miss" → "Web caching" → "Web cached"
+   - **Fix Status**: ✅ VERIFIED - No expo-file-system errors. Cache API functioning as designed.
 
 ### Minor Issues
 
-3. **CORS Warning**
+1. **CORS Warning** - NON-BLOCKING
    - **Severity**: LOW - Does not block functionality
    - **Issue**: CORS error when accessing 'https://proxy.vibecodeapp.com/v1/domains'
    - **Impact**: Non-blocking, appears to be analytics or tracking related
+   - **Status**: Can be ignored - does not affect core functionality
 
 ---
 
