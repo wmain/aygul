@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type TTSProvider = 'elevenlabs' | 'openai';
 export type AppMode = 'development' | 'production';
+export type AudioSystem = 'line-based' | 'section-based'; // NEW: Feature flag
 
 // Languages available in development mode (with pre-bundled audio)
 export const DEV_MODE_LANGUAGES = ['en', 'es', 'fr'] as const;
@@ -16,12 +17,14 @@ export type DevModeLocation = typeof DEV_MODE_LOCATIONS[number];
 interface DevSettings {
   ttsProvider: TTSProvider;
   appMode: AppMode;
+  audioSystem: AudioSystem; // NEW: Choose between line-based or section-based
 }
 
 interface DevSettingsState {
   settings: DevSettings;
   setTTSProvider: (provider: TTSProvider) => void;
   setAppMode: (mode: AppMode) => void;
+  setAudioSystem: (system: AudioSystem) => void; // NEW
   isDevSettingsOpen: boolean;
   openDevSettings: () => void;
   closeDevSettings: () => void;
@@ -29,7 +32,8 @@ interface DevSettingsState {
 
 const defaultSettings: DevSettings = {
   ttsProvider: 'elevenlabs',
-  appMode: 'development', // Development mode by default
+  appMode: 'development',
+  audioSystem: 'line-based', // REVERT: Use line-based (working system)
 };
 
 export const useDevSettingsStore = create<DevSettingsState>()(
@@ -43,6 +47,10 @@ export const useDevSettingsStore = create<DevSettingsState>()(
       setAppMode: (mode) =>
         set((state) => ({
           settings: { ...state.settings, appMode: mode },
+        })),
+      setAudioSystem: (system) =>
+        set((state) => ({
+          settings: { ...state.settings, audioSystem: system },
         })),
       isDevSettingsOpen: false,
       openDevSettings: () => set({ isDevSettingsOpen: true }),
