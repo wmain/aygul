@@ -1410,8 +1410,20 @@ export async function generateConversationWithSections(
       globalTime += sectionAudio.duration || sectionTime;
       
     } catch (error) {
-      console.error(`Failed to load section ${sectionType}:`, error);
-      // Skip this section on error
+      console.error(`[Section Generation] Failed to load section ${sectionType}:`, error);
+      console.error(`[Section Generation] Error details:`, {
+        sectionType,
+        lineCount: sectionLines.length,
+        error: error instanceof Error ? error.message : String(error)
+      });
+      // Skip this section on error but add lines without audio
+      sectionLines.forEach(line => {
+        line.audioUri = undefined;
+        line.startTime = globalTime;
+        line.endTime = globalTime + line.duration;
+        dialogueLines.push(line);
+        globalTime += line.duration + pauseBetweenLines;
+      });
       continue;
     }
   }
