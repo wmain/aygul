@@ -1167,6 +1167,14 @@ export default function PlaybackScreen() {
     const line = dialogue.lines[index];
     if (!line) return;
 
+    console.log(`[Playback] Attempting to play line ${index}`, {
+      hasAudioUri: !!line.audioUri,
+      audioUriType: typeof line.audioUri,
+      audioUri: line.audioUri,
+      sectionAudioStart: line.sectionAudioStart,
+      segmentType: line.segmentType
+    });
+
     if (line.audioUri) {
       try {
         let audioSource = line.audioUri;
@@ -1176,13 +1184,18 @@ export default function PlaybackScreen() {
           audioSource = audioSource.uri;
         }
         
+        console.log(`[Playback] Audio source:`, audioSource);
+        
         // Check if we need to change the audio file
         // (different sections may have different audio files)
         const prevLine = index > 0 ? dialogue.lines[index - 1] : null;
         const needsNewAudio = !prevLine || prevLine.audioUri !== line.audioUri;
         
+        console.log(`[Playback] Needs new audio: ${needsNewAudio}`);
+        
         if (needsNewAudio) {
           // Replace with new audio file
+          console.log(`[Playback] Replacing audio with:`, audioSource);
           audioPlayer.replace(audioSource);
           audioPlayer.playbackRate = playbackSpeedRef.current;
         }
@@ -1190,16 +1203,19 @@ export default function PlaybackScreen() {
         // If this line has a sectionAudioStart time, seek to that position
         if (line.sectionAudioStart !== undefined && needsNewAudio) {
           // For section-based audio, seek to the start of this line within the section
+          console.log(`[Playback] Seeking to ${line.sectionAudioStart}s`);
           audioPlayer.currentTime = line.sectionAudioStart;
         }
         
         // Start playing
+        console.log(`[Playback] Calling play()`);
         audioPlayer.play();
         
         // Track which line we just started playing
         lastPlayedIndexRef.current = index;
+        console.log(`[Playback] Audio playback initiated for line ${index}`);
       } catch (error) {
-        console.error('Error playing audio:', error);
+        console.error('[Playback] Error playing audio:', error);
         setTimeout(() => {
           if (isPlayingRef.current) {
             playNextLine();
@@ -1207,6 +1223,7 @@ export default function PlaybackScreen() {
         }, line.duration || 2000);
       }
     } else {
+      console.log(`[Playback] No audio URI, using timeout for line ${index}`);
       setTimeout(() => {
         if (isPlayingRef.current) {
           playNextLine();
