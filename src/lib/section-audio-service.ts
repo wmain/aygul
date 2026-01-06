@@ -149,8 +149,8 @@ export async function getSectionAudio(
       sectionType,
       language,
       location,
-      speakerA,
-      speakerB,
+      speakerA: speakerA.toLowerCase(),
+      speakerB: speakerB.toLowerCase(),
       dialogueLines: dialogueLines.map(line => ({
         text: line.text,
         spokenText: line.spokenText,
@@ -164,7 +164,14 @@ export async function getSectionAudio(
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(requestData)
+      body: JSON.stringify({
+        section_type: requestData.sectionType,
+        language: requestData.language,
+        location: requestData.location,
+        speaker_a: requestData.speakerA,  // Convert to snake_case for backend
+        speaker_b: requestData.speakerB,  // Convert to snake_case for backend
+        dialogue_lines: requestData.dialogueLines
+      })
     });
     
     if (!response.ok) {
