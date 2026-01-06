@@ -4,6 +4,7 @@ import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
 import { useDevSettingsStore, type TTSProvider } from './dev-settings-store';
 import { getBundledLesson, getBundledLessonKey, hasBundledLesson, getBundledLessonAsync } from './bundled-lessons';
+import { getSectionAudio, groupLinesBySection, generateSectionCacheKey } from './section-audio-service';
 
 const OPENAI_API_KEY = process.env.EXPO_PUBLIC_VIBECODE_OPENAI_API_KEY;
 const ELEVENLABS_API_KEY = process.env.EXPO_PUBLIC_VIBECODE_ELEVENLABS_API_KEY;
