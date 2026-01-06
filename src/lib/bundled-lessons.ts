@@ -242,7 +242,64 @@ function createEnglishCoffeeShopLesson(): GeneratedDialogue {
 
 // Placeholder functions for other lessons - will be filled in when audio is generated
 function createEnglishRestaurantLesson(): GeneratedDialogue {
-  return createPlaceholderLesson('en', 'restaurant');
+  // Load the lesson data from the generated JSON
+  const lines: DialogueLine[] = EN_RESTAURANT_DATA.map((line, index) => ({
+    id: `line_${index}`,
+    speakerId: line.speakerId as 1 | 2,
+    text: line.text,
+    spokenText: line.spokenText,
+    emotion: line.emotion,
+    segmentType: line.segmentType,
+    audioUri: getBundledAudioUri('en_restaurant', index),
+    startTime: 0, // Will be calculated
+    endTime: 0,
+    duration: 0
+  }));
+  
+  // Calculate timing
+  let currentTime = 0;
+  const pauseBetweenLines = 500;
+  
+  lines.forEach(line => {
+    const text = line.spokenText || line.text;
+    const wordCount = text.split(' ').length;
+    const duration = Math.max((wordCount / 2.5) * 1000, 2000);
+    
+    line.startTime = currentTime;
+    line.endTime = currentTime + duration;
+    line.duration = duration;
+    
+    currentTime += duration + pauseBetweenLines;
+  });
+  
+  return {
+    config: {
+      language: 'en',
+      location: 'restaurant',
+      situation: 'Ordering food at a restaurant',
+      difficulty: 'intermediate',
+      format: 'classroom_style',
+      lessonSegments: [
+        { id: 'seg_0', type: 'welcome' },
+        { id: 'seg_1', type: 'vocabulary' },
+        { id: 'seg_2', type: 'slow_dialogue' },
+        { id: 'seg_3', type: 'breakdown' },
+        { id: 'seg_4', type: 'natural_speed' },
+        { id: 'seg_5', type: 'quiz' },
+        { id: 'seg_6', type: 'cultural_note' },
+      ],
+      speaker1: { name: 'Maria', role: 'Customer' },
+      speaker2: { name: 'Jordan', role: 'Server' },
+      quizConfig: {
+        vocabL2ToL1: true,
+        vocabL1ToL2: true,
+        phraseMeaning: true,
+        comprehension: true,
+      },
+    },
+    lines,
+    totalDuration: currentTime,
+  };
 }
 
 function createSpanishCoffeeShopLesson(): GeneratedDialogue {
