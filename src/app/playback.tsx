@@ -1164,11 +1164,22 @@ export default function PlaybackScreen() {
           audioSource = audioSource.uri;
         }
         
-        // Replace the audio source
-        audioPlayer.replace(audioSource);
+        // Check if we need to change the audio file
+        // (different sections may have different audio files)
+        const prevLine = index > 0 ? dialogue.lines[index - 1] : null;
+        const needsNewAudio = !prevLine || prevLine.audioUri !== line.audioUri;
         
-        // Set playback rate
-        audioPlayer.playbackRate = playbackSpeedRef.current;
+        if (needsNewAudio) {
+          // Replace with new audio file
+          audioPlayer.replace(audioSource);
+          audioPlayer.playbackRate = playbackSpeedRef.current;
+        }
+        
+        // If this line has a sectionAudioStart time, seek to that position
+        if (line.sectionAudioStart !== undefined && needsNewAudio) {
+          // For section-based audio, seek to the start of this line within the section
+          audioPlayer.currentTime = line.sectionAudioStart;
+        }
         
         // Start playing
         audioPlayer.play();
