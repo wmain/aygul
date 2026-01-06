@@ -1278,7 +1278,26 @@ export function generateInstantMockConversation(
     const dialogueLine: DialogueLine = {
       id: `mock_${index}`,
       speakerId: line.speakerId,
+      text: line.text,
+      spokenText: line.spokenText,
+      emotion: line.emotion,
+      segmentType: line.segmentType,
+      audioUri: undefined,
+      startTime: currentTime,
+      endTime: currentTime + duration,
+      duration,
+    };
 
+    currentTime += duration + pauseBetweenLines;
+    return dialogueLine;
+  });
+
+  return {
+    config,
+    lines,
+    totalDuration: currentTime,
+  };
+}
 
 /**
  * Generate conversation with section-based audio caching
