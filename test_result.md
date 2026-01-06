@@ -250,6 +250,14 @@ January 6, 2025
 - **agent**: "testing"
 - **message**: "Cache system verified: 2 sections cached (0.17 MB), cache hit/miss behavior working, file storage working, MongoDB integration working, ElevenLabs API integration working."
 
+### Message 3
+- **agent**: "testing"
+- **message**: "Frontend testing completed. CRITICAL ISSUE FOUND: Frontend-backend API mismatch causing all section audio requests to fail with 422 errors. Frontend sends camelCase (speakerA, speakerB) but backend expects snake_case (speaker_a, speaker_b). This blocks all audio generation in the web app."
+
+### Message 4
+- **agent**: "testing"
+- **message**: "Additional issue: Device cache (expo-file-system) not compatible with web platform. Needs web-specific implementation using IndexedDB or localStorage."
+
 ---
 
 ## Test Coverage Summary
