@@ -58,7 +58,7 @@ class TestTTSEndpoint:
     """Test TTS generation endpoint"""
     
     def test_tts_endpoint_responds(self):
-        \"\"\"TTS endpoint should respond (not 404)\"\"\"
+        """TTS endpoint should respond (not 404)"""
         request_data = {
             "text": "Test audio",
             "voice": "nova",
