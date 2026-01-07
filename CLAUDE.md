@@ -1,153 +1,151 @@
-<stack>
-  Expo SDK 53, React Native 0.76.7, bun (not npm).
-  React Query for server/async state.
-  NativeWind + Tailwind v3 for styling.
-  react-native-reanimated v3 for animations (preferred over Animated from react-native).
-  react-native-gesture-handler for gestures.
-  lucide-react-native for icons.
-  All packages are pre-installed. DO NOT install new packages unless they are @expo-google-font packages or pure JavaScript helpers like lodash, dayjs, etc.
-</stack>
+# Language Learning Conversation App
 
-<structure>
-  src/app/          — Expo Router file-based routes (src/app/_layout.tsx is root). Add new screens to this folder.
-  src/components/   — Reusable UI components. Add new components to this folder.
-  src/lib/          — Utilities: cn.ts (className merge), example-context.ts (state pattern)
-</structure>
+## What This App Does
+Users select a language, location, and lesson format, then get a 15-20 minute audio lesson with synchronized text. Think Pimsleur meets Duolingo with AI-generated content.
+
+## The Core Innovation: Section-Based Caching
+
+**READ THIS BEFORE TOUCHING AUDIO/GENERATION CODE.**
+
+Each lesson is assembled from independently cached SECTIONS, not generated as a whole:
+
+```
+Cache Key = {language}_{sectionType}_{location}_{speakerA}_{speakerB}
+Example: en_welcome_coffeeshop_maria_jordan
+```
+
+### Why This Matters
+- ElevenLabs API is called **ONCE per unique section, ever** (across all users)
+- 7 section files per lesson instead of 43 line-by-line files
+- Sections are reusable across lesson formats (removing Vocabulary still uses cached Welcome, etc.)
+- After initial generation, lessons are **instant** (no API calls)
+
+### The 7 Section Types
+`welcome` | `vocabulary` | `slow_dialogue` | `breakdown` | `natural_speed` | `quiz` | `cultural_note`
+
+### 3-Tier Caching Flow
+```
+User Request → Device Cache → Server Cache (MongoDB) → Generate via ElevenLabs
+                    ↓              ↓                         ↓
+              (instant)      (instant)            (store permanently, then instant forever)
+```
+
+### Critical Files
+| File | Purpose |
+|------|---------|
+| `src/lib/dialogue-service.ts` | Lesson generation logic, `generateConversationWithSections()` |
+| `src/lib/section-audio-service.ts` | 3-tier cache lookup, device caching |
+| `backend/routes/audio_cache.py` | Server cache API, MongoDB storage |
+| `backend/services/elevenlabs_dialogue.py` | ElevenLabs text-to-dialogue API calls |
+
+### DO NOT
+- Revert to line-by-line audio generation (the old `generateConversation()` path)
+- Change the cache key format without understanding the implications
+- Skip the cache lookup and call ElevenLabs directly
+
+---
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── _layout.tsx          # Root layout with providers
+│   ├── index.tsx             # Configuration screen (language, location, format, characters)
+│   └── playback.tsx          # Lesson playback with section-aware UI
+├── components/
+│   ├── DevSettingsModal.tsx  # Shake to open dev settings
+│   └── LessonBuilder.tsx     # Drag-and-drop segment builder
+└── lib/
+    ├── types.ts              # Domain model - READ THIS FIRST
+    ├── dialogue-store.ts     # Zustand store for config & state
+    ├── dialogue-service.ts   # Generation logic
+    └── section-audio-service.ts # Section caching layer
+
+backend/
+├── server.py                 # FastAPI server
+├── routes/audio_cache.py     # Section cache endpoints
+├── services/elevenlabs_dialogue.py # ElevenLabs integration
+└── models/audio_cache.py     # MongoDB schemas
+```
+
+---
+
+## Tech Stack
+- Expo SDK 53, React Native 0.76.7, **bun** (not npm)
+- NativeWind + Tailwind v3 for styling
+- Zustand for local state, React Query for async state
+- react-native-reanimated v3 for animations
+- expo-audio for playback
+- FastAPI backend with MongoDB
+
+---
+
+## Current State (Update This Section)
+
+**Launch Target:** 3 languages (English, Spanish, French) × 10 locations
+
+**What Works:**
+- Config screen UI complete
+- Playback screen UI complete with section headers, flashcards, quiz cards
+- Line-by-line generation works (but expensive)
+- Backend cache infrastructure exists
+
+**What's Incomplete:**
+- Section-based generation needs ElevenLabs text-to-dialogue integration verified
+- Pre-generation script for launch content not built
+- Feature flag `audioSystem` is set to `line-based`, needs to switch to `section-based`
+
+---
+
+## Technical Guidelines
+
+<stack>
+  All packages are pre-installed. DO NOT install new packages unless they are @expo-google-fonts packages or pure JavaScript helpers.
+</stack>
 
 <typescript>
   Explicit type annotations for useState: `useState<Type[]>([])` not `useState([])`
   Null/undefined handling: use optional chaining `?.` and nullish coalescing `??`
-  Include ALL required properties when creating objects — TypeScript strict mode is enabled.
+  TypeScript strict mode is enabled.
 </typescript>
 
-<environment>
-  You are in Vibecode. The system manages git and the dev server (port 8081).
-  DO NOT: manage git, touch the dev server, or check its state.
-  The user views the app through Vibecode App.
-  The user cannot see the code or interact with the terminal. Do not tell the user to do anything with the code or terminal.
-  You can see logs in the expo.log file.
-  The Vibecode App has tabs like ENV tab, API tab, LOGS tab. You can ask the user to use these tabs to view the logs, add enviroment variables, or give instructions for APIs like OpenAI, Nanobanana, Grok, Elevenlabs, etc. but first try to implement the functionality yourself.
-  The user is likely non-technical, communicate with them in an easy to understand manner.
-  If the user's request is vague or ambitious, scope down to specific functionality. Do everything for them.
-  For images, use URLs from unsplash.com. You can also tell the user they can use the IMAGES tab to generate and uplooad images.
-</environment>
+<state>
+  Zustand for local state. Always use selectors: `useStore(s => s.foo)` not `useStore()`
+  React Query for server/async state. Always use object API: `useQuery({ queryKey, queryFn })`
+</state>
 
+<styling>
+  Use NativeWind. Use cn() helper from src/lib/cn.ts for conditional classNames.
+  CameraView, LinearGradient, Animated components DO NOT support className - use style prop.
+</styling>
+
+<audio>
+  Use expo-audio (not expo-av). Duration is in MILLISECONDS.
+  Section audio uses timestamps for UI sync - each line has startTime/endTime within the section file.
+</audio>
+
+<environment>
+  Vibecode manages git and dev server. DO NOT manage git or touch the dev server.
+  Backend runs on port 8001. Frontend on port 8081.
+</environment>
 
 <forbidden_files>
   Do not edit: patches/, babel.config.js, metro.config.js, app.json, tsconfig.json, nativewind-env.d.ts
 </forbidden_files>
 
-<routing>
-  Expo Router for file-based routing. Every file in src/app/ becomes a route.
-  Never delete or refactor RootLayoutNav from src/app/_layout.tsx.
-  
-  <stack_router>
-    src/app/_layout.tsx (root layout), src/app/index.tsx (matches '/'), src/app/settings.tsx (matches '/settings')
-    Use <Stack.Screen options={{ title, headerStyle, ... }} /> inside pages to customize headers.
-  </stack_router>
-  
-  <tabs_router>
-    Only files registered in src/app/(tabs)/_layout.tsx become actual tabs.
-    Unregistered files in (tabs)/ are routes within tabs, not separate tabs.
-    Nested stacks create double headers — remove header from tabs, add stack inside each tab.
-    At least 2 tabs or don't use tabs at all — single tab looks bad.
-  </tabs_router>
-  
-  <router_selection>
-    Games should avoid tabs — use full-screen stacks instead.
-    For full-screen overlays/modals outside tabs: create route in src/app/ (not src/app/(tabs)/), 
-    then add `<Stack.Screen name="page" options={{ presentation: "modal" }} />` in src/app/_layout.tsx.
-  </router_selection>
-  
-  <rules>
-    Only ONE route can map to "/" — can't have both src/app/index.tsx and src/app/(tabs)/index.tsx.
-    Dynamic params: use `const { id } = useLocalSearchParams()` from expo-router.
-  </rules>
-</routing>
+---
 
-<state>
-  React Query for server/async state. Always use object API: `useQuery({ queryKey, queryFn })`.
-  Never wrap RootLayoutNav directly.
-  React Query provider must be outermost; nest other providers inside it.
-  
-  Use `useMutation` for async operations — no manual `setIsLoading` patterns.
-  Wrap third-party lib calls (RevenueCat, etc.) in useQuery/useMutation for consistent loading states.
-  Reuse query keys across components to share cached data — don't create duplicate providers.
-  
-  For local state, use Zustand. However, most state is server state, so use React Query for that.
-  Always use a selector with Zustand to subscribe only to the specific slice of state you need (e.g., useStore(s => s.foo)) rather than the whole store to prevent unnecessary re-renders. Make sure that the value returned by the selector is a primitive. Do not execute store methods in selectors; select data/functions, then compute outside the selector.
-  For persistence: use AsyncStorage inside context hook providers. Only persist necessary data.
-  Split ephemeral from persisted state to avoid hydration bugs.
-</state>
+## Common Mistakes to Avoid
 
-<safearea>
-  Import from react-native-safe-area-context, NOT from react-native.
-  Skip SafeAreaView inside tab stacks with navigation headers.
-  Skip when using native headers from Stack/Tab navigator.
-  Add when using custom/hidden headers.
-  For games: use useSafeAreaInsets hook instead.
-</safearea>
+1. **Segment type case mismatch** - GPT returns `VOCAB`, types use `vocabulary`. Map between them.
+2. **spokenText vs text** - For Vocabulary/Breakdown/Quiz, `text` is display, `spokenText` is what gets spoken. Always use `spokenText || text` for audio.
+3. **Duration units** - Audio duration must be in milliseconds (2000+), not seconds.
+4. **Zustand selectors** - Always use selectors to prevent unnecessary re-renders.
 
-<data>
-  Create realistic mock data when you lack access to real data.
-  For image analysis: actually send to LLM don't mock.
-</data>
+---
 
-<design>
-  Don't hold back. This is mobile — design for touch, thumb zones, glanceability.
-  Inspiration: iOS, Instagram, Airbnb, Coinbase, polished habit trackers.
-
-  <avoid>
-    Purple gradients on white, generic centered layouts, predictable patterns.
-    Web-like designs on mobile. Overused fonts (Space Grotesk, Inter).
-  </avoid>
-
-  <do>
-    Cohesive themes with dominant colors and sharp accents.
-    High-impact animations: progress bars, button feedback, haptics.
-    Depth via gradients and patterns, not flat solids.
-    Install `@expo-google-fonts/{font-name}` for fonts (eg: `@expo-google-fonts/inter`)
-    Use zeego for context menus and dropdowns (native feel). Lookup the documentation on zeego.dev to see how to use it.
-  </do>
-</design>
-
-<mistakes>
-  <styling>
-    Use Nativewind for styling. Use cn() helper from src/lib/cn.ts to merge classNames when conditionally applying classNames or passing classNames via props.
-    CameraView, LinearGradient, and Animated components DO NOT support className. Use inline style prop.
-    Horizontal ScrollViews will expand vertically to fill flex containers. Add `style={{ flexGrow: 0 }}` to constrain height to content.
-  </styling>
-
-  <camera>
-    Use CameraView from expo-camera, NOT the deprecated Camera import.
-    import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-    Use style={{ flex: 1 }}, not className.
-    Overlay UI must be absolute positioned inside CameraView.
-  </camera>
-
-  <react_native>
-    No Node.js buffer in React Native — don't import from 'buffer'.
-  </react_native>
-
-  <ux>
-    Use Pressable over TouchableOpacity.
-    Use custom modals, not Alert.alert().
-    Ensure keyboard is dismissable and doesn't obscure inputs. This is much harder to implement than it seems. You can use the react-native-keyboard-controller package to help with this. But, make sure to look up the documentation before implementing.
-  </ux>
-
-  <outdated_knowledge>
-    Your react-native-reanimated and react-native-gesture-handler training may be outdated. Look up current docs before implementing.
-  </outdated_knowledge>
-</mistakes>
-
-<appstore>
-  Cannot assist with App Store or Google Play submission processes (app.json, eas.json, EAS CLI commands).
-  For submission help, click "Share" on the top right corner on the Vibecode App and select "Submit to App Store".
-</appstore> 
-
-<skills>
-You have access to a few skills in the `.claude/skills` folder. Use them to your advantage.
-- ai-apis-like-chatgpt: Use this skill when the user asks you to make an app that requires an AI API.
-- expo-docs: Use this skill when the user asks you to use an Expo SDK module or package that you might not know much about.
-- frontend-app-design: Use this skill when the user asks you to design a frontend app component or screen.
-</skills>
+## Skills Available
+- `ai-apis-like-chatgpt`: For AI API integration
+- `expo-docs`: For Expo SDK modules
+- `frontend-app-design`: For UI/UX design
