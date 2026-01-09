@@ -1,0 +1,397 @@
+# Expo & React Native Patterns
+
+## Expo Router
+
+### File-Based Routing
+
+Routes are defined by files in `src/app/`:
+
+```
+src/app/
+├── _layout.tsx      # Root layout (wraps all routes)
+├── index.tsx        # Home screen (/)
+├── playback.tsx     # Playback screen (/playback)
+└── +not-found.tsx   # 404 handler
+```
+
+### Navigation
+
+```typescript
+import { router } from 'expo-router';
+
+// Navigate to a route
+router.push('/playback');
+
+// Navigate with params
+router.push({
+  pathname: '/playback',
+  params: { lessonId: '123' },
+});
+
+// Go back
+router.back();
+
+// Replace current route
+router.replace('/');
+```
+
+### Layout Pattern
+
+```typescript
+// src/app/_layout.tsx
+import { Stack } from 'expo-router';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
+
+export default function RootLayout() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="playback" />
+      </Stack>
+    </QueryClientProvider>
+  );
+}
+```
+
+---
+
+## NativeWind Styling
+
+### Basic Usage
+
+```typescript
+import { View, Text } from 'react-native';
+
+export function Card() {
+  return (
+    <View className="bg-white rounded-xl p-4 shadow-lg">
+      <Text className="text-lg font-semibold text-gray-900">
+        Title
+      </Text>
+    </View>
+  );
+}
+```
+
+### Conditional Classes with cn()
+
+```typescript
+import { cn } from '@/lib/cn';
+
+<View className={cn(
+  'p-4 rounded-lg border',
+  isActive ? 'border-blue-500 bg-blue-50' : 'border-gray-200',
+  isDisabled && 'opacity-50'
+)} />
+```
+
+### Components That DON'T Support className
+
+These require the `style` prop:
+
+```typescript
+// LinearGradient
+import { LinearGradient } from 'expo-linear-gradient';
+
+<LinearGradient
+  colors={['#4F46E5', '#7C3AED']}
+  style={{ flex: 1, padding: 16, borderRadius: 12 }}
+/>
+
+// Animated components
+import Animated from 'react-native-reanimated';
+
+<Animated.View style={[{ padding: 16 }, animatedStyle]} />
+
+// CameraView
+import { CameraView } from 'expo-camera';
+
+<CameraView style={{ flex: 1 }} />
+```
+
+### Dark Mode
+
+```typescript
+import { useColorScheme } from '@/lib/useColorScheme';
+
+const colorScheme = useColorScheme();
+
+<View className={cn(
+  'p-4',
+  colorScheme === 'dark' ? 'bg-gray-900' : 'bg-white'
+)} />
+
+// Or use dark: prefix
+<View className="bg-white dark:bg-gray-900" />
+```
+
+---
+
+## Audio Handling (expo-av)
+
+### Loading and Playing Audio
+
+```typescript
+import { Audio } from 'expo-av';
+import { useState, useEffect } from 'react';
+
+function useAudio(uri: string | null) {
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [position, setPosition] = useState(0);
+  const [duration, setDuration] = useState(0);
+
+  useEffect(() => {
+    if (!uri) return;
+
+    let isMounted = true;
+    const loadAudio = async () => {
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        { uri },
+        { shouldPlay: false },
+        (status) => {
+          if (!isMounted) return;
+          if (status.isLoaded) {
+            setIsPlaying(status.isPlaying);
+            setPosition(status.positionMillis);
+            setDuration(status.durationMillis ?? 0);
+          }
+        }
+      );
+      if (isMounted) setSound(newSound);
+    };
+
+    loadAudio();
+
+    return () => {
+      isMounted = false;
+      sound?.unloadAsync();
+    };
+  }, [uri]);
+
+  const play = () => sound?.playAsync();
+  const pause = () => sound?.pauseAsync();
+  const seek = (ms: number) => sound?.setPositionAsync(ms);
+
+  return { sound, isPlaying, position, duration, play, pause, seek };
+}
+```
+
+### Audio Duration Units
+
+**CRITICAL: All durations are in MILLISECONDS**
+
+```typescript
+// Good - milliseconds
+const duration = 2500; // 2.5 seconds
+await sound.setPositionAsync(5000); // Seek to 5 seconds
+
+// Bad - seconds (will barely be audible)
+const duration = 2.5;
+```
+
+### Section-Based Playback
+
+```typescript
+// Each section has its own audio file
+// Lines within have startTime/endTime in milliseconds
+
+interface DialogueLine {
+  text: string;
+  startTime: number;  // ms from section start
+  endTime: number;    // ms from section start
+}
+
+// Seek to a specific line within section
+const seekToLine = (line: DialogueLine) => {
+  await sound.setPositionAsync(line.startTime);
+};
+
+// Highlight current line based on position
+const currentLine = lines.find(
+  line => position >= line.startTime && position < line.endTime
+);
+```
+
+---
+
+## React Native Reanimated
+
+### Shared Values and Animated Styles
+
+```typescript
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withSpring,
+} from 'react-native-reanimated';
+
+function AnimatedCard() {
+  const scale = useSharedValue(1);
+  const opacity = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+    opacity: opacity.value,
+  }));
+
+  const handlePress = () => {
+    scale.value = withSpring(0.95);
+    opacity.value = withTiming(0.8, { duration: 150 });
+  };
+
+  return (
+    <Animated.View style={[styles.card, animatedStyle]}>
+      <Pressable onPress={handlePress}>
+        <Text>Press me</Text>
+      </Pressable>
+    </Animated.View>
+  );
+}
+```
+
+### Gesture Handler Integration
+
+```typescript
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  runOnJS,
+} from 'react-native-reanimated';
+
+function DraggableItem({ onReorder }: { onReorder: (from: number, to: number) => void }) {
+  const translateY = useSharedValue(0);
+  const isActive = useSharedValue(false);
+
+  const panGesture = Gesture.Pan()
+    .onStart(() => {
+      isActive.value = true;
+    })
+    .onUpdate((e) => {
+      translateY.value = e.translationY;
+    })
+    .onEnd(() => {
+      isActive.value = false;
+      translateY.value = withSpring(0);
+      runOnJS(onReorder)(fromIndex, toIndex);
+    });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+    zIndex: isActive.value ? 1 : 0,
+    shadowOpacity: withTiming(isActive.value ? 0.2 : 0),
+  }));
+
+  return (
+    <GestureDetector gesture={panGesture}>
+      <Animated.View style={animatedStyle}>
+        {/* Content */}
+      </Animated.View>
+    </GestureDetector>
+  );
+}
+```
+
+---
+
+## Safe Area Handling
+
+```typescript
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+// Wrap screens in SafeAreaView
+export default function Screen() {
+  return (
+    <SafeAreaView className="flex-1 bg-white">
+      {/* Content */}
+    </SafeAreaView>
+  );
+}
+
+// Or use edges prop for specific edges
+<SafeAreaView edges={['top', 'bottom']} className="flex-1">
+```
+
+---
+
+## Common Patterns
+
+### Loading States
+
+```typescript
+function LessonScreen() {
+  const { data: lesson, isLoading, error } = useQuery({
+    queryKey: ['lesson', lessonId],
+    queryFn: () => fetchLesson(lessonId),
+  });
+
+  if (isLoading) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View className="flex-1 items-center justify-center p-4">
+        <Text className="text-red-500 text-center">{error.message}</Text>
+        <Button title="Retry" onPress={() => refetch()} />
+      </View>
+    );
+  }
+
+  return <LessonContent lesson={lesson} />;
+}
+```
+
+### Keyboard Avoiding
+
+```typescript
+import { KeyboardAvoidingView, Platform } from 'react-native';
+
+<KeyboardAvoidingView
+  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+  className="flex-1"
+>
+  {/* Form content */}
+</KeyboardAvoidingView>
+```
+
+### Platform-Specific Code
+
+```typescript
+import { Platform } from 'react-native';
+
+const styles = {
+  shadow: Platform.select({
+    ios: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+    },
+    android: {
+      elevation: 4,
+    },
+  }),
+};
+```
+
+---
+
+## DO NOT
+
+1. **Don't use StyleSheet.create for everything** - Prefer NativeWind classes
+2. **Don't forget to unload audio** - Always clean up in useEffect return
+3. **Don't use seconds for audio** - Use milliseconds
+4. **Don't use className on native components** - LinearGradient, Animated.*, CameraView need style
+5. **Don't import from 'expo-av' for new audio code** - Prefer expo-audio if available
+6. **Don't forget SafeAreaView** - Always wrap screens for notch/home indicator
