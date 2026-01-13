@@ -30,9 +30,9 @@ Example: en_welcome_coffeeshop_maria_jordan
 
 ### 3-Tier Caching Flow
 ```
-User Request → Device Cache → Server Cache (Supabase/R2) → Generate via ElevenLabs
-                    ↓              ↓                              ↓
-              (instant)      (instant)               (store permanently, then instant forever)
+User Request → Device Cache → Supabase Storage → Generate via ElevenLabs
+                    ↓              ↓                       ↓
+              (instant)      (instant)        (store permanently, then instant forever)
 ```
 
 ### Critical Files
@@ -40,8 +40,7 @@ User Request → Device Cache → Server Cache (Supabase/R2) → Generate via El
 |------|---------|
 | `src/lib/dialogue-service.ts` | Lesson generation logic, `generateConversationWithSections()` |
 | `src/lib/section-audio-service.ts` | 3-tier cache lookup, device caching |
-| `backend/routes/audio_cache.py` | Server cache API, MongoDB storage (migrating to Supabase) |
-| `backend/services/elevenlabs_dialogue.py` | ElevenLabs text-to-dialogue API calls |
+| `supabase/functions/` | Edge Functions for API logic (cache checks, ElevenLabs calls) |
 
 ### DO NOT
 - Revert to line-by-line audio generation (the old `generateConversation()` path)
@@ -65,16 +64,16 @@ src/
     ├── types.ts              # Domain model - READ THIS FIRST
     ├── dialogue-store.ts     # Zustand store for config & state
     ├── dialogue-service.ts   # Generation logic
-    └── section-audio-service.ts # Section caching layer
+    ├── section-audio-service.ts # Section caching layer
+    └── supabase.ts           # Supabase client
 
-backend/                      # FastAPI (migrating to Supabase)
-├── server.py                 # FastAPI server
-├── routes/audio_cache.py     # Section cache endpoints
-├── services/elevenlabs_dialogue.py # ElevenLabs integration
-└── models/audio_cache.py     # MongoDB schemas
+supabase/
+├── functions/                # Edge Functions (TypeScript, Deno)
+│   └── ...                   # API endpoints for cache, generation, etc.
+└── migrations/               # Database schema migrations
 
 docs/                         # Project documentation
-├── MIGRATION_PLAN.md         # Supabase/R2 migration details
+├── MIGRATION_PLAN.md         # Supabase migration details
 └── AI_ONBOARDING_README.md   # How to use these docs with AI tools
 
 .cursor/rules/                # Cursor-specific configuration
@@ -94,8 +93,19 @@ docs/                         # Project documentation
 | Server State | React Query |
 | Animations | react-native-reanimated v3 |
 | Audio | expo-av |
-| Backend | Supabase (PostgreSQL + Auth + Realtime) - migrating from FastAPI/MongoDB |
-| Audio Storage | Cloudflare R2 - migrating from local/MongoDB |
+| Backend | **Supabase** (PostgreSQL + Auth + Storage + Edge Functions) |
+| Audio Storage | **Supabase Storage** |
+
+### Backend Architecture (Simplified)
+
+**Everything lives in Supabase.** One dashboard, one vendor, minimal wiring.
+
+- **Auth**: Supabase Auth (JWT tokens, user management)
+- **Database**: Supabase PostgreSQL (lesson metadata, cache index, user data)
+- **Storage**: Supabase Storage (audio files)
+- **API Logic**: Supabase Edge Functions (TypeScript, Deno runtime)
+
+This is optimized for speed of development, not cost optimization. If egress costs become a problem at scale, migrate storage to Cloudflare R2 later.
 
 ---
 
@@ -348,10 +358,10 @@ const { mutate, error } = useMutation({
 
 ## Environment
 
-| Service | Port | Notes |
-|---------|------|-------|
-| Backend | 8001 | FastAPI (migrating to Supabase) |
-| Frontend | 8081 | Expo dev server |
+| Service | Notes |
+|---------|-------|
+| Supabase | Auth, Database, Storage, Edge Functions (all-in-one) |
+| Frontend | Expo dev server (port 8081) |
 
 ---
 
