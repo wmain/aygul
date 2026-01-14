@@ -2,16 +2,16 @@
  * Section-Based Audio Service
  * Handles 3-tier caching for section audio:
  * 1. Device cache (expo-file-system for native, IndexedDB for web)
- * 2. Server cache (backend API + MongoDB)
- * 3. API generation (ElevenLabs)
+ * 2. Server cache (Supabase Storage + audio_cache table)
+ * 3. API generation (ElevenLabs via Edge Function)
  */
 
 import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
 import type { DialogueLine, LessonSegmentType } from './types';
+import { callEdgeFunction } from './supabase';
 
 const CACHE_DIR = `${FileSystem.documentDirectory}audio-cache/`;
-const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
 
 // Web-specific caching using Cache API
 const WEB_CACHE_NAME = 'audio-section-cache-v1';
@@ -181,44 +181,36 @@ export async function getSectionAudio(
   
   onProgress?.(0.3, 'Checking server...');
   
-  // Tier 2 & 3: Check server cache or generate
+  // Tier 2 & 3: Check server cache or generate via Supabase Edge Function
   try {
-    const requestData: GenerateSectionRequest = {
-      sectionType,
+    // Call Supabase Edge Function (uses snake_case)
+    const rawData = await callEdgeFunction<{
+      cache_key: string;
+      audio_url: string;
+      timestamps: Array<{
+        text: string;
+        speaker_id: number;
+        start: number;
+        end: number;
+        emotion?: string;
+      }>;
+      duration: number;
+      is_cached: boolean;
+    }>('audio-section', {
+      section_type: sectionType,
       language,
       location,
-      speakerA: speakerA.toLowerCase(),
-      speakerB: speakerB.toLowerCase(),
-      dialogueLines: dialogueLines.map(line => ({
+      speaker_a: speakerA.toLowerCase(),
+      speaker_b: speakerB.toLowerCase(),
+      dialogue_lines: dialogueLines.map(line => ({
         text: line.text,
         spokenText: line.spokenText,
         speakerId: line.speakerId,
         emotion: line.emotion
       }))
-    };
-    
-    const response = await fetch(`${BACKEND_URL}/api/audio/section/generate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        section_type: requestData.sectionType,
-        language: requestData.language,
-        location: requestData.location,
-        speaker_a: requestData.speakerA,  // Convert to snake_case for backend
-        speaker_b: requestData.speakerB,  // Convert to snake_case for backend
-        dialogue_lines: requestData.dialogueLines
-      })
     });
-    
-    if (!response.ok) {
-      throw new Error(`Server error: ${response.status}`);
-    }
-    
-    const rawData: any = await response.json();
-    
-    // Map snake_case backend response to camelCase
+
+    // Map snake_case response to camelCase
     const data: SectionAudioResponse = {
       cacheKey: rawData.cache_key,
       audioUrl: rawData.audio_url,
@@ -226,8 +218,8 @@ export async function getSectionAudio(
       duration: rawData.duration,
       isCached: rawData.is_cached
     };
-    
-    console.log('[Section Audio] Response mapped:', { audioUrl: data.audioUrl, isCached: data.isCached });
+
+    console.log('[Section Audio] Response from Supabase:', { audioUrl: data.audioUrl, isCached: data.isCached });
     
     if (data.isCached) {
       onProgress?.(0.7, 'Found on server');

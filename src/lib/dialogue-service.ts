@@ -5,10 +5,10 @@ import { Platform } from 'react-native';
 import { useDevSettingsStore, type TTSProvider } from './dev-settings-store';
 import { getBundledLesson, getBundledLessonKey, hasBundledLesson, getBundledLessonAsync } from './bundled-lessons';
 import { getSectionAudio, groupLinesBySection, generateSectionCacheKey } from './section-audio-service';
+import { callEdgeFunction } from './supabase';
 
 const OPENAI_API_KEY = process.env.EXPO_PUBLIC_VIBECODE_OPENAI_API_KEY;
 const ELEVENLABS_API_KEY = process.env.EXPO_PUBLIC_VIBECODE_ELEVENLABS_API_KEY;
-const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
 
 // OpenAI TTS voices mapped by speaker name
 // Available voices: alloy, echo, fable, onyx, nova, shimmer
@@ -488,28 +488,25 @@ function parseDialogue(response: string): ParsedLine[] {
 }
 
 async function generateDialogueText(config: ConversationConfig): Promise<ParsedLine[]> {
-  // Use backend proxy to avoid CORS issues
-  const response = await fetch(`${BACKEND_URL}/api/generate-dialogue`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+  // Call Supabase Edge Function for dialogue generation
+  const data = await callEdgeFunction<{
+    output?: Array<{ content?: Array<{ text?: string }> }>;
+    output_text?: string;
+    error?: string;
+  }>('generate-dialogue', {
+    config: {
+      language: config.language,
+      location: config.location,
+      situation: config.situation,
+      difficulty: config.difficulty,
+      format: config.format,
     },
-    body: JSON.stringify({
-      config: {
-        language: config.language,
-        location: config.location,
-        situation: config.situation,
-        difficulty: config.difficulty,
-        format: config.format,
-      },
-    }),
   });
 
-  if (!response.ok) {
-    throw new Error('Failed to generate dialogue');
+  if (data.error) {
+    throw new Error(`Failed to generate dialogue: ${data.error}`);
   }
 
-  const data = await response.json();
   const text = data.output?.[0]?.content?.[0]?.text || data.output_text || '';
 
   return parseDialogue(text);
@@ -521,22 +518,18 @@ async function generateAudioOpenAI(
   retryCount = 0
 ): Promise<{ uri: string; duration: number }> {
   try {
-    // Use backend proxy to avoid CORS issues
-    const response = await fetch(`${BACKEND_URL}/api/tts`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        text: text,
-        voice: voice,
-        provider: 'openai',
-      }),
+    // Call Supabase Edge Function for TTS
+    const data = await callEdgeFunction<{
+      audio?: string;
+      error?: string;
+    }>('text-to-speech', {
+      text: text,
+      voice: voice,
+      provider: 'openai',
     });
 
-    if (!response.ok) {
-      const error = await response.text();
-      console.warn('OpenAI TTS API error:', error);
+    if (data.error) {
+      console.warn('OpenAI TTS API error:', data.error);
 
       // Retry on failure (could be rate limit)
       if (retryCount < 2) {
@@ -548,8 +541,7 @@ async function generateAudioOpenAI(
       throw new Error('Failed to generate audio');
     }
 
-    const data = await response.json();
-    const fileUri = data.audio; // Already base64 data URI from backend
+    const fileUri = data.audio || ''; // Already base64 data URI from Edge Function
 
     // Estimate duration based on text length (rough estimate: 150 words per minute)
     const wordCount = text.split(' ').length;
@@ -574,22 +566,18 @@ async function generateAudioElevenLabs(
   retryCount = 0
 ): Promise<{ uri: string; duration: number }> {
   try {
-    // Use backend proxy to avoid CORS issues
-    const response = await fetch(`${BACKEND_URL}/api/tts`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        text: text,
-        voice: voiceId,
-        provider: 'elevenlabs',
-      }),
+    // Call Supabase Edge Function for TTS
+    const data = await callEdgeFunction<{
+      audio?: string;
+      error?: string;
+    }>('text-to-speech', {
+      text: text,
+      voice: voiceId,
+      provider: 'elevenlabs',
     });
 
-    if (!response.ok) {
-      const error = await response.text();
-      console.warn('ElevenLabs TTS API error:', error);
+    if (data.error) {
+      console.warn('ElevenLabs TTS API error:', data.error);
 
       if (retryCount < 2) {
         console.log('Retrying ElevenLabs audio generation after delay...');
@@ -600,8 +588,7 @@ async function generateAudioElevenLabs(
       throw new Error('Failed to generate audio with ElevenLabs');
     }
 
-    const data = await response.json();
-    const fileUri = data.audio; // Already base64 data URI from backend
+    const fileUri = data.audio || ''; // Already base64 data URI from Edge Function
 
     const wordCount = text.split(' ').length;
     const estimatedDuration = (wordCount / 150) * 60 * 1000;
