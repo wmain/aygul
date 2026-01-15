@@ -1,8 +1,23 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MMKV } from 'react-native-mmkv';
 import type { ConversationConfig, GeneratedDialogue, Location, Difficulty, SpeakerConfig, Language, LessonFormat, LessonSegment, LessonSegmentType, QuizConfig } from './types';
 import { CHARACTER_ROLES, LESSON_SEGMENT_CONFIGS, DEFAULT_QUIZ_CONFIG } from './types';
+
+const storage = new MMKV({ id: 'dialogue-store' });
+
+const mmkvStorage = {
+  getItem: (name: string) => {
+    const value = storage.getString(name);
+    return value ?? null;
+  },
+  setItem: (name: string, value: string) => {
+    storage.set(name, value);
+  },
+  removeItem: (name: string) => {
+    storage.delete(name);
+  },
+};
 
 interface DialogueState {
   // Configuration
@@ -55,7 +70,9 @@ const defaultConfig: ConversationConfig = {
   quizConfig: DEFAULT_QUIZ_CONFIG,
 };
 
-export const useDialogueStore = create<DialogueState>((set) => ({
+export const useDialogueStore = create<DialogueState>()(
+  persist(
+    (set) => ({
   config: defaultConfig,
   setLanguage: (language) =>
     set((state) => ({ config: { ...state.config, language } })),
@@ -125,4 +142,14 @@ export const useDialogueStore = create<DialogueState>((set) => ({
       isGenerating: false,
       currentLineIndex: 0,
     }),
-}));
+    }),
+    {
+      name: 'dialogue-storage',
+      storage: createJSONStorage(() => mmkvStorage),
+      partialize: (state) => ({
+        config: state.config,
+        cachedLesson: state.cachedLesson,
+      }),
+    }
+  )
+);

@@ -345,6 +345,7 @@ const { mutate, error } = useMutation({
 4. **Don't touch dev server** - Let the development environment manage it.
 5. **Don't use class components** - Functional components only.
 6. **Don't skip cache lookup** - Never call ElevenLabs directly.
+7. **Don't write large components** - 80-line limit per component. Split into smaller, focused components if larger.
 
 ### Common Mistakes to Avoid
 
@@ -365,10 +366,59 @@ const { mutate, error } = useMutation({
 
 ---
 
+## CLI Commands Quick Reference
+
+### bun (Package Manager)
+```bash
+bun install              # Install all dependencies
+bun add <package>        # Add a package
+bun remove <package>     # Remove a package
+bun run <script>         # Run a script from package.json
+```
+
+### Expo
+```bash
+npx expo start           # Start dev server
+npx expo start --clear   # Start with cleared cache
+npx expo prebuild        # Generate native projects
+npx expo run:ios         # Build and run on iOS simulator
+npx expo run:android     # Build and run on Android emulator
+```
+
+### Supabase CLI
+```bash
+supabase start           # Start local Supabase stack
+supabase stop            # Stop local Supabase stack
+supabase db reset        # Reset database to migrations
+supabase functions serve # Serve Edge Functions locally
+supabase gen types typescript --local > src/lib/database.types.ts  # Generate types
+```
+
+### EAS (Expo Application Services)
+```bash
+eas build --platform ios          # Build iOS app
+eas build --platform android      # Build Android app
+eas build --profile development   # Build development client
+eas submit --platform ios         # Submit to App Store
+eas update                        # Publish OTA update
+```
+
+---
+
 ## Skills Available
 - `ai-apis-like-chatgpt`: For AI API integration
 - `expo-docs`: For Expo SDK modules
 - `frontend-app-design`: For UI/UX design
+
+---
+
+## When Stuck
+
+1. **Read `src/lib/types.ts` first** - Contains all domain types and the source of truth for data structures.
+2. **Check existing patterns** - Look at similar files in the codebase before writing new code. Follow established conventions.
+3. **Ask for clarification** - If requirements are ambiguous, ask rather than guess. Wrong assumptions waste time.
+4. **Check the section caching flow** - Most audio/generation issues trace back to cache key mismatches or skipped lookups.
+5. **Verify duration units** - If audio timing is wrong, check if you're using milliseconds (correct) vs seconds (wrong).
 
 ---
 
