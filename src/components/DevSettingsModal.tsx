@@ -88,7 +88,7 @@ export function DevSettingsModal() {
                   Dev Settings
                 </Text>
                 <Text className="text-xs text-slate-400 mt-0.5">
-                  {Platform.OS === 'web' ? 'Press D to open' : 'Shake device to open'}
+                  {Platform.OS === 'web' ? 'Press D to open' : 'Triple-tap header to open'}
                 </Text>
               </View>
               <Pressable
