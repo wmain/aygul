@@ -388,3 +388,24 @@ const { mutate, error } = useMutation({
 2. Add display info to `SEGMENT_DISPLAY_INFO`
 3. Update `dialogue-service.ts` generation logic
 4. Update cache key generation in `section-audio-service.ts`
+
+---
+
+## Session Summaries (MANDATORY)
+
+**At the START of every session**, Claude MUST read `SESSION_SUMMARY.md` (if it exists) to understand:
+- What was done last time
+- What's currently working or broken
+- What needs to happen next
+
+**At the END of every session**, Claude MUST create/update `SESSION_SUMMARY.md` before finishing. This is not optional.
+
+The summary includes:
+1. **Changes Made** - Files modified/created and why
+2. **Current State** - What works, what's been tested (✅ markers)
+3. **Known Issues** - Bugs, limitations, tech debt (⏳ markers)
+4. **Next Steps** - What should happen next, in priority order
+
+**Format:** Scannable bullets, not paragraphs. End with session duration and `Status: Ready for commit ✅` or `Status: WIP`.
+
+**Why:** This file is how Claude maintains continuity between sessions. Without it, context is lost.
