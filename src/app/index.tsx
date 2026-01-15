@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { View, Text, Pressable, ScrollView, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -220,7 +220,30 @@ function getComplementaryRoles(location: Location, youRole: string): Character[]
 
 export default function ConfigureScreen() {
   const router = useRouter();
+  const openDevSettings = useDevSettingsStore((s) => s.openDevSettings);
   const appMode = useDevSettingsStore((s) => s.settings.appMode);
+
+  // Triple-tap to open dev settings (works on simulator and real device)
+  const tapCountRef = useRef(0);
+  const tapTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleHeaderTap = useCallback(() => {
+    tapCountRef.current += 1;
+
+    if (tapTimeoutRef.current) {
+      clearTimeout(tapTimeoutRef.current);
+    }
+
+    if (tapCountRef.current >= 3) {
+      tapCountRef.current = 0;
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      openDevSettings();
+    } else {
+      tapTimeoutRef.current = setTimeout(() => {
+        tapCountRef.current = 0;
+      }, 500);
+    }
+  }, [openDevSettings]);
   const language = useDialogueStore((s) => s.config.language);
   const location = useDialogueStore((s) => s.config.location);
   const difficulty = useDialogueStore((s) => s.config.difficulty);
@@ -400,13 +423,15 @@ export default function ConfigureScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 120 }}
         >
-          {/* Header */}
+          {/* Header - Triple tap to open dev settings */}
           <Animated.View entering={FadeIn.duration(600)} className="px-6 pt-4 pb-6">
-            <Text className="text-3xl font-bold text-white">Conversation</Text>
-            <Text className="text-3xl font-bold text-white">Practice</Text>
-            <Text className="text-white/80 mt-2 text-base">
-              Create realistic dialogues to practice any language
-            </Text>
+            <Pressable onPress={handleHeaderTap}>
+              <Text className="text-3xl font-bold text-white">Conversation</Text>
+              <Text className="text-3xl font-bold text-white">Practice</Text>
+              <Text className="text-white/80 mt-2 text-base">
+                Create realistic dialogues to practice any language
+              </Text>
+            </Pressable>
           </Animated.View>
 
           {/* Main Card */}
